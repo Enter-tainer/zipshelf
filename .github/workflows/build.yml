@@ -1,0 +1,75 @@
+name: build
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  android:
+    name: Android app (tests + APK)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - uses: gradle/actions/setup-gradle@v4
+
+      - name: Unit tests
+        working-directory: android
+        run: ./gradlew :app:testDebugUnitTest --no-daemon --console=plain
+
+      - name: Assemble debug APK
+        working-directory: android
+        run: ./gradlew :app:assembleDebug --no-daemon --console=plain
+
+      - name: Show APK size
+        working-directory: android
+        run: ls -lh app/build/outputs/apk/debug/app-debug.apk
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: app-debug
+          path: android/app/build/outputs/apk/debug/app-debug.apk
+          if-no-files-found: error
+
+  skill:
+    name: Skill (assemble a book from templates, then validate it)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Assemble the template into a book
+        run: |
+          mkdir -p /tmp/demo
+          cp -r skills/webshelf-book/templates/assets /tmp/demo/
+          cp skills/webshelf-book/templates/index.html /tmp/demo/index.html
+          cp skills/webshelf-book/templates/page.html /tmp/demo/ch0001.html
+
+      - name: Check the book (absolute paths / colours / broken refs / size)
+        run: python skills/webshelf-book/scripts/check_book.py /tmp/demo
+
+      - name: Pack it
+        run: python skills/webshelf-book/scripts/pack_book.py /tmp/demo -o /tmp/demo-book.zip
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: demo-book
+          path: /tmp/demo-book.zip
+
+      - name: Render a formula with KaTeX
+        run: |
+          npm init -y >/dev/null 2>&1
+          npm i --silent katex@0.16.11
+          node skills/webshelf-book/scripts/render_math.mjs 'a^2+b^2=c^2' | head -c 120
+          echo
+          node skills/webshelf-book/scripts/render_math.mjs --display '\int_0^1 f(x)\,\mathrm{d}x' | head -c 120
