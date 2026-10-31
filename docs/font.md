@@ -69,6 +69,38 @@ system/etc/fonts.xml                设备上的原文件 + 只插入一个新 <
   所以保留回滚手段
 - 模块只注册家族，不替换系统默认字体，因此**不会**把整个系统 UI 变成 Medium
 
+## 真机验证（汉王 N10ProIII / Android 14 / Magisk 30.7）
+
+装好模块并重启后：
+
+```
+$ adb shell su -c 'ls -l /system/fonts/NotoSerifSC-VF.ttf'
+-rw-r--r-- 1 root root 25129160 /system/fonts/NotoSerifSC-VF.ttf
+
+$ adb shell su -c "grep -c 'Zipshelf Serif' /system/etc/fonts.xml"
+3
+```
+
+字重是不是真的生效，用同一句话分别设 `font-weight: 400 / 500 / 700`（外加一行强制系统字体作对照），
+截屏统计墨迹占比（像素 < 110 的比例）：
+
+| 行 | 墨迹占比 | 说明 |
+|---|---|---|
+| 400 | 8.38% | Regular |
+| **500** | **9.69%** | **Medium，比 400 重 15.6%** |
+| 700 | 12.77% | Bold，比 400 重 52% |
+| 对照（强制 `Noto Serif CJK SC`） | 8.22% | ≈ 400：说明家族没生效时就会落在这个值 |
+
+也就是说 500 拿到的是**真实的 Medium 字形**，不是合成加粗、也不是回退。
+
+书里最终生效的效果（同一章、同一位置、同一测法）：
+
+| 版本 | 行距 | 墨迹占比 |
+|---|---|---|
+| 1.0625rem / 系统 Regular（原始） | 79 px | 5.89% |
+| 1.15rem / 系统 Regular | 86 px | 6.00% |
+| **1.2rem / Zipshelf Serif Medium** | **90 px** | **6.26%** |
+
 ## 重新生成（换字体/换机器）
 
 ```bash
