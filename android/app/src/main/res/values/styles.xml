@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- 墨水屏：纯黑白、无动画、无阴影、无涟漪（涟漪是半透明，墨水屏上就是灰） -->
+    <style name="AppTheme" parent="android:Theme.Material.Light.NoActionBar">
+        <item name="android:windowBackground">#FFFFFFFF</item>
+        <item name="android:colorAccent">#FF000000</item>
+        <item name="android:colorPrimary">#FFFFFFFF</item>
+        <item name="android:colorPrimaryDark">#FFFFFFFF</item>
+        <item name="android:textColorPrimary">#FF000000</item>
+        <item name="android:textColorSecondary">#FF000000</item>
+        <item name="android:textColorHint">#FF000000</item>
+        <item name="android:colorControlHighlight">#00000000</item>
+        <item name="android:colorControlActivated">#FF000000</item>
+        <item name="android:colorControlNormal">#FF000000</item>
+        <item name="android:statusBarColor">#FFFFFFFF</item>
+        <item name="android:navigationBarColor">#FFFFFFFF</item>
+        <item name="android:windowLightStatusBar">true</item>
+        <item name="android:windowAnimationStyle">@null</item>
+    </style>
+
+    <!-- 用 TextView 当按钮：完全绕开 Material Button 的灰度底/阴影/全大写 -->
+    <style name="EinkButtonText">
+        <item name="android:background">@drawable/eink_button</item>
+        <item name="android:textColor">@color/eink_button_text</item>
+        <item name="android:textSize">17sp</item>
+        <item name="android:gravity">center</item>
+        <item name="android:paddingTop">16dp</item>
+        <item name="android:paddingBottom">16dp</item>
+        <item name="android:clickable">true</item>
+        <item name="android:focusable">true</item>
+        <item name="android:singleLine">true</item>
+    </style>
+
+    <!-- 对话框：白底黑框、无圆角、无灰色按钮；关掉背景压暗（dim 会让整屏蒙灰） -->
+    <style name="EinkDialog" parent="android:Theme.Material.Light.Dialog.Alert">
+        <item name="android:windowBackground">@drawable/eink_dialog_bg</item>
+        <item name="android:colorAccent">#FF000000</item>
+        <item name="android:colorPrimary">#FFFFFFFF</item>
+        <item name="android:textColorPrimary">#FF000000</item>
+        <item name="android:textColorSecondary">#FF000000</item>
+        <item name="android:colorControlHighlight">#00000000</item>
+        <item name="android:colorControlActivated">#FF000000</item>
+        <item name="android:backgroundDimEnabled">false</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:windowFrame">@null</item>
+    </style>
+</resources>

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 输入框：白底黑框，替掉 Material 的灰色下划线 -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle">
+    <solid android:color="#FFFFFFFF" />
+    <stroke android:width="2dp" android:color="#FF000000" />
+    <padding
+        android:bottom="10dp"
+        android:left="12dp"
+        android:right="12dp"
+        android:top="10dp" />
+</shape>

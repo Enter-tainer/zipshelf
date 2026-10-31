@@ -1,0 +1,23 @@
+# Android 构建产物
+android/.gradle/
+android/build/
+android/app/build/
+android/local.properties
+android/.android-cli-home/
+
+# 本地签名密钥，绝不入库
+android/keystore/
+
+# 本地构建环境（沙箱内的 gradle / android 家目录）
+.gradle-home/
+.android-home/
+
+# 测试用书（含第三方版权内容，不入库）
+testbooks/
+
+# 杂项
+*.log
+__pycache__/
+*.pyc
+.DS_Store
+Thumbs.db

@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+<meta charset="utf-8"/>
+<!-- 这一页的 <title> 会成为书架上的书名 -->
+<title>书名 · Book Title</title>
+<link rel="stylesheet" type="text/css" href="assets/style.css"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="color-scheme" content="light"/>
+<meta name="description" content="书名 — 一句话简介"/>
+<!-- 可选：竖版封面。也可以直接放 cover.png 在根目录（优先级更高） -->
+<meta property="og:image" content="assets/images/cover.png"/>
+<link rel="stylesheet" type="text/css" href="assets/katex/katex.min.css"/>
+</head>
+<body>
+
+<header class="site-head"><div class="wrap">
+  <a class="step" href="index.html">目录</a>
+  <span class="crumb">书名</span>
+</div></header>
+
+<div class="wrap">
+
+<h1 class="booktitle">
+  <span class="tn-zh tn-zh-inline" lang="zh-CN">书名</span>
+  <span class="tn-en" lang="en">Book Title</span>
+</h1>
+
+<div class="ltx_para">
+  <p class="ltx_p">
+    <span class="tn-zh" lang="zh-CN">摘要：这本书讲什么。</span>
+    <span class="tn-en" lang="en">Abstract: what this book is about.</span>
+  </p>
+</div>
+
+<h2 class="ltx_title_section"><span class="tn-zh tn-zh-inline" lang="zh-CN">目录</span><span class="tn-en" lang="en">Contents</span></h2>
+
+<ul class="toc">
+  <li><a href="ch0001.html"><span class="n">1</span><span class="t"><span class="tn-zh" lang="zh-CN">第一章标题</span><span class="tn-en" lang="en">Chapter 1</span></span><span class="e">10 min</span></a></li>
+  <!-- 每章一行，href 必须指向真实存在的文件：
+  <li><a href="ch0002.html"><span class="n">2</span><span class="t"><span class="tn-zh" lang="zh-CN">第二章标题</span><span class="tn-en" lang="en">Chapter 2</span></span><span class="e">12 min</span></a></li>
+  -->
+</ul>
+
+</div>
+
+<footer class="site-foot"><div class="wrap"><p>书名 · Subtitle<br/>来源与许可写在这里。</p></div></footer>
+
+</body>
+</html>

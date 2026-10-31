@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="420" height="180" viewBox="0 0 420 180">
+  <!-- 示例插图：纯黑白线条图，说明插图应该长什么样（无灰、无抗锯齿填充） -->
+  <rect x="1" y="1" width="418" height="178" fill="#fff" stroke="#000" stroke-width="2"/>
+  <path d="M40 140 L140 60 L240 110 L340 40" fill="none" stroke="#000" stroke-width="3"/>
+  <circle cx="140" cy="60" r="5" fill="#000"/>
+  <circle cx="240" cy="110" r="5" fill="#000"/>
+  <path d="M30 150 L400 150" fill="none" stroke="#000" stroke-width="1"/>
+  <path d="M30 150 L30 30" fill="none" stroke="#000" stroke-width="1"/>
+</svg>

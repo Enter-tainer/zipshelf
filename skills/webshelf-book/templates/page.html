@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+<meta charset="utf-8"/>
+<!-- 书架标题就取这个 <title> -->
+<title>第 1 章 标题 · Chapter Title</title>
+<link rel="stylesheet" type="text/css" href="assets/style.css"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="color-scheme" content="light"/>
+<meta name="description" content="书名 — 副标题"/>
+<link rel="stylesheet" type="text/css" href="assets/katex/katex.min.css"/>
+</head>
+<body>
+
+<!-- 顶栏：目录 + 上一页/下一页。全部相对路径。
+     单页书可以只留「目录」；多章时按下面注释的样子加前后页链接
+     （链接必须指向真实存在的文件，否则自检会报缺失引用）。
+
+  <a class="step" href="ch0000.html" rel="prev">← 上一页</a>
+  <a class="step" href="ch0002.html" rel="next">下一页 →</a>
+
+-->
+<header class="site-head"><div class="wrap">
+  <a class="step" href="index.html">目录</a>
+  <span class="crumb">第 1 章</span>
+</div></header>
+
+<div class="wrap">
+
+<section id="Chx1" class="ltx_chapter">
+
+  <!-- 双语标题：中文在前，英文在后 -->
+  <h1 class="ltx_title ltx_title_chapter chapter-start">
+    <span class="tn-zh tn-zh-inline" lang="zh-CN">第 1 章 标题</span>
+    <span class="tn-en" lang="en">Chapter Title</span>
+  </h1>
+
+  <!-- 双语段落：两个 span 成对出现 -->
+  <div id="Chx1.p1" class="ltx_para">
+    <p id="Chx1.p1.1" class="ltx_p">
+      <span class="tn-zh" lang="zh-CN">中文段落。行内公式这样放：<span class="mi"><!-- node scripts/render_math.mjs 'a^2+b^2=c^2' --></span>，后面继续写。</span>
+      <span class="tn-en" lang="en">English paragraph. Inline math goes here: <span class="mi"><!-- render_math.mjs 'a^2+b^2=c^2' --></span>, then continue.</span>
+    </p>
+  </div>
+
+  <!-- 行间公式（带编号）：.eqblock 包 .eqtable；宽度超出时该行横向滚动，不缩小 -->
+  <div class="ltx_para">
+    <span class="eqblock">
+      <table class="eqtable">
+        <tr>
+          <td class="eqcell ltx_align_right">
+            <span class="md"><!-- node scripts/render_math.mjs --display '\int_0^1 f(x)\,\mathrm{d}x = F(1)-F(0)' --></span>
+          </td>
+          <td class="eqno">(1.1)</td>
+        </tr>
+      </table>
+    </span>
+  </div>
+
+  <!-- 插图：自然尺寸，不放大、不超过栏宽 -->
+  <figure class="figure">
+    <img class="figimg" src="assets/images/example.svg" alt="示例插图"/>
+    <figcaption class="ltx_caption">
+      <span class="tn-zh" lang="zh-CN">图 1.1　说明文字</span>
+      <span class="tn-en" lang="en">Figure 1.1. Caption text.</span>
+    </figcaption>
+  </figure>
+
+</section>
+
+</div>
+
+<footer class="site-foot"><div class="wrap"><p>书名 · Subtitle<br/>来源与许可写在这里。</p></div></footer>
+
+</body>
+</html>
