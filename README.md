@@ -22,7 +22,9 @@ EPUB 对公式的支持很差：多数阅读器不解析 MathML，回退成纯�
 - **服务控制**：书架上有「启动/停止服务」+ 状态行，通知栏也能停
 - **纯黑白 UI**：整屏灰阶像素 0.5%（只剩文字抗锯齿），按钮/对话框/分隔线全部纯黑纯白
 - **单端口多书**：所有书共用 `127.0.0.1:8787`，按 `/books/{id}/` 前缀隔离
-- **体积小**：纯 Java + framework API，无 androidx / Compose / 第三方 HTTP 库，APK ≈ 55 KB
+- **体积小**：纯 Java + framework API，无 androidx / Compose / 第三方 HTTP 库，APK ≈ 60 KB
+- **正文用系统级思源宋 Medium**：字体由 Magisk 模块装进系统（[docs/font.md](docs/font.md)），
+  书里只写字体族名，不用 `@font-face`、不占 APK、不逐本打包；没装模块时自动回退系统宋体
 
 ## 怎么用
 
@@ -39,6 +41,8 @@ EPUB 对公式的支持很差：多数阅读器不解析 MathML，回退成纯�
 android/                       Android App（Kotlin 都不用，纯 Java + framework API）
 skills/webshelf-book/          「怎么做这种书」的 skill：格式契约、CSS 规范、模板、自检与打包脚本
 docs/design.md                 设计文档：实测数据、决策记录、HTTP 规格、已知限制
+docs/font.md                   系统字体方案：思源宋 Medium 的 Magisk 模块与回滚
+tools/make_font_module.py      生成上述 Magisk 模块（字体 + 只插入一个 family）
 docs/screenshots/              截图
 ```
 

@@ -38,16 +38,38 @@ public final class LibraryHandler implements HttpServer.Handler {
 
     private final Supplier<Map<String, Book>> books;
     private final boolean gzipPassthrough;
+    private final AssetSource assets;
+
+    /** App 全局资源的保留命名空间，不属于任何一本书。 */
+    private static final String APP_NS = "/@/";
+
+    private static final String FONT_CSS =
+            "/* zipshelf 提供：完整思源宋可变字体，字重 200-900 */\n"
+            + "@font-face {\n"
+            + "  font-family: \"Book Serif\";\n"
+            + "  src: url(\"/@/fonts/NotoSerifSC-VF.ttf\") format(\"truetype\");\n"
+            + "  font-weight: 200 900;\n"
+            + "  font-display: swap;\n"
+            + "}\n";
 
     public LibraryHandler(Supplier<Map<String, Book>> books, boolean gzipPassthrough) {
+        this(books, gzipPassthrough, null);
+    }
+
+    public LibraryHandler(Supplier<Map<String, Book>> books, boolean gzipPassthrough,
+                          AssetSource assets) {
         this.books = books;
         this.gzipPassthrough = gzipPassthrough;
+        this.assets = assets;
     }
 
     @Override
     public Response handle(Request req) throws Exception {
         String path = req.path;
 
+        if (path.startsWith(APP_NS)) {
+            return appAsset(path);
+        }
         if ("/healthz".equals(path)) {
             return Response.text(200, "ok\n");
         }
@@ -154,6 +176,35 @@ public final class LibraryHandler implements HttpServer.Handler {
         return Response.html(200, sb.toString());
     }
 
+    /**
+     * App 自带资源。目前只服务正文衬线字体：
+     *   /@/font.css                          一行 @font-face，书里可以直接 link
+     *   /@/fonts/NotoSerifSC-VF.ttf          完整字体本体
+     */
+    private Response appAsset(String path) throws IOException {
+        if (assets == null) {
+            return Response.text(404, "no app assets in this build\n");
+        }
+        String name = path.substring(APP_NS.length());
+        if ("font.css".equals(name)) {
+            byte[] css = FONT_CSS.getBytes(StandardCharsets.UTF_8);
+            Response r = new Response();
+            r.contentType = "text/css; charset=utf-8";
+            r.etag = "\"" + Integer.toHexString(css.length) + "\"";
+            r.body = new ByteBody(css);
+            return r;
+        }
+        if (!assets.exists(name)) {
+            return Response.text(404, "no such app asset: " + name + "\n");
+        }
+        long length = assets.length(name);
+        Response r = new Response();
+        r.contentType = Mime.forName(name);
+        r.etag = "\"" + Long.toHexString(length) + "\"";
+        r.body = new AssetBody(assets, name, length);
+        return r;
+    }
+
     static String escape(String s) {
         if (s == null) {
             return "";
@@ -163,6 +214,49 @@ public final class LibraryHandler implements HttpServer.Handler {
     }
 
     // ------------------------------------------------------------ bodies
+
+    /** App 资源（字体）：一次性流式发出，长度已知。 */
+    static final class AssetBody implements Body {
+        private final AssetSource assets;
+        private final String name;
+        private final long length;
+
+        AssetBody(AssetSource assets, String name, long length) {
+            this.assets = assets;
+            this.name = name;
+            this.length = length;
+        }
+
+        @Override
+        public long length() {
+            return length;
+        }
+
+        @Override
+        public void writeTo(OutputStream out, long offset, long len) throws IOException {
+            try (InputStream in = assets.open(name)) {
+                long skip = offset;
+                while (skip > 0) {
+                    long n = in.skip(skip);
+                    if (n <= 0) {
+                        break;
+                    }
+                    skip -= n;
+                }
+                byte[] buf = new byte[64 * 1024];
+                long remaining = len;
+                while (remaining > 0) {
+                    int want = (int) Math.min(buf.length, remaining);
+                    int r = in.read(buf, 0, want);
+                    if (r < 0) {
+                        break;
+                    }
+                    out.write(buf, 0, r);
+                    remaining -= r;
+                }
+            }
+        }
+    }
 
     /** 零解压：zip 的 raw deflate + 自造 gzip 头尾。 */
     static final class GzipBody implements Body {

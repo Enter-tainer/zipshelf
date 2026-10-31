@@ -1,1138 +1,2273 @@
-﻿/* ==========================================================================
-   book.css 鈥?reading stylesheet for
-   "The Elements of Differentiable Programming" (arXiv:2403.14606)
-
-   Owned by tools/epubkit/.  pack.py always injects THIS file as
-   OEBPS/styles/book.css and ignores any styles/ directory found in the
-   build directory, so this file is the single source of typographic truth.
-
-   Design contract:
-     * never pin a body font family 鈥?`serif` lets the reader choose;
-     * never set a px font-size on body 鈥?sizes are relative (em) so the
-       reader's font-size setting always wins;
-     * no `!important`, no `@import`, no remote fonts, no vendor prefixes;
-     * every rule degrades to plain upright text if a reader ignores it.
-
-   The selectors mirror the LaTeXML 0.7.6 class vocabulary actually emitted
-   by html/book.html (ltx_title_chapter, ltx_eqn_table, ltx_theorem, ...),
-   plus the small set of EPUB-internal classes emitted by the converter
-   (.chapter-start, .mblock, .cover-page, .titlepage, .part-title,
-   .colophon, .toc-page).
-   ========================================================================== */
-
-/* --------------------------------------------------------------------------
-   1. Page & text base
-   -------------------------------------------------------------------------- */
-
-html {
-  /* keep the reader's own base size; 100% == inherit */
-  font-size: 100%;
-}
-
-body {
-  /* Let the reading system pick the serif face; do not hard-pin one. */
-  font-family: serif;
-  font-size: 1em;              /* inherit the reader setting, never px/pt */
-  line-height: 1.5;
-  margin: 0 4%;
-  padding: 0;
-  text-align: justify;
-  hyphens: auto;
-  word-wrap: break-word;
-  overflow-wrap: break-word;
-  /* no `color`: readers invert colours for night mode */
-}
-
-/* Paragraphs: small space between, no first-line indent (e-reader idiom). */
-p,
-.ltx_p {
-  margin: 0 0 0.55em 0;
-  text-indent: 0;
-}
-
-/* LaTeXML wraps block content in <div class="ltx_para">; do not let it add
-   space on top of <p>. */
-.ltx_para {
-  margin: 0;
-  padding: 0;
-}
-
-/* The converter may keep LaTeXML's inline logical blocks as <span>; make
-   them behave like the blocks they represent. */
-.ltx_block,
-.ltx_inline-logical-block {
-  display: block;
-}
-
-/* Horizontal rules / page breaks emitted by LaTeXML. */
-hr,
-.ltx_break {
-  border: 0;
-  border-top: 1px solid currentColor;
-  margin: 1.2em 0;
-  opacity:1;
-}
-
-br.ltx_break {
-  display: inline;
-  border: 0;
-  opacity: 1;
-}
-
-/* --------------------------------------------------------------------------
-   2. Headings
-   The real book: document title h1, parts h2, chapters h3, sections h4,
-   subsections h5, subsubsections/run-in headings h6.  Sizes are relative so
-   everything scales with the reader's base size.
-   -------------------------------------------------------------------------- */
-
-h1, h2, h3, h4, h5, h6,
-.ltx_title {
-  font-family: inherit;
-  font-weight: bold;
-  font-style: normal;
-  line-height: 1.25;
-  text-align: left;
-  text-indent: 0;
-  hyphens: manual;
-  /* keep a heading glued to the text that follows it */
-  page-break-after: avoid;
-  break-after: avoid;
-  page-break-inside: avoid;
-  break-inside: avoid;
-}
-
-h1 { font-size: 1.9em;  margin: 0 0 0.8em 0; }
-h2 { font-size: 1.55em; margin: 1.6em 0 0.6em 0; }
-h3 { font-size: 1.32em; margin: 1.5em 0 0.55em 0; }
-h4 { font-size: 1.15em; margin: 1.3em 0 0.45em 0; }
-h5 { font-size: 1.02em; margin: 1.2em 0 0.4em 0; }
-h6 { font-size: 1em;    margin: 1.1em 0 0.35em 0; }
-
-/* A part/chapter opener starts a new page.  The converter puts
-   class="chapter-start" on the chapter <h1>; nothing else forces a break. */
-.chapter-start {
-  page-break-before: always;
-  break-before: page;
-  margin-top: 0;
-}
-
-/* Run-in headings (theorem / proof labels) must flow inline with the text.
-   LaTeXML marks them <h6 class="ltx_title ltx_runin ltx_title_theorem">. */
-h1.ltx_runin, h2.ltx_runin, h3.ltx_runin, h4.ltx_runin,
-h5.ltx_runin, h6.ltx_runin,
-.ltx_runin {
-  display: inline;
-  font-size: 1em;
-  margin: 0;
-  padding: 0;
-  line-height: inherit;
-  page-break-after: auto;
-  break-after: auto;
-}
-
-/* Numbering tags ("Chapter 2", "2.1", "Figure 1.1") are part of the heading
-   text; keep them upright and bold, with a hair of space after the number. */
-.ltx_tag {
-  font-weight: bold;
-  font-style: normal;
-}
-
-.ltx_tag_part,
-.ltx_tag_chapter {
-  display: block;
-  font-size: 0.72em;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  font-weight: bold;
-  margin: 0 0 0.6em 0;
-  opacity:1;
-}
-
-/* Part openers and chapter openers: centred, generous top margin. */
-.ltx_title_part,
-.part-title {
-  text-align: center;
-  margin: 2.5em 0 1.5em 0;
-  page-break-after: avoid;
-  break-after: avoid;
-}
-
-.ltx_part {
-  page-break-before: always;
-  break-before: page;
-}
-
-.ltx_title_chapter,
-.chapter-title {
-  text-align: center;
-  margin: 1.5em 0 1.2em 0;
-  page-break-after: avoid;
-  break-after: avoid;
-}
-
-/* Unnumbered paragraph-level subheads keep the body size but go bold. */
-.ltx_title_paragraph,
-.ltx_paragraph h6,
-h6.ltx_title_paragraph {
-  font-size: 1em;
-  font-weight: bold;
-  margin: 1.1em 0 0.35em 0;
-}
-
-/* --------------------------------------------------------------------------
-   3. Title page / colophon / TOC page (converter-emitted front matter)
-   -------------------------------------------------------------------------- */
-
-.titlepage {
-  text-align: center;
-  margin: 18% 0 0 0;
-  page-break-after: always;
-  break-after: page;
-}
-
-.titlepage h1,
-.titlepage .book-title {
-  font-size: 2.1em;
-  line-height: 1.2;
-  margin: 0 0 1.2em 0;
-  text-align: center;
-}
-
-.titlepage .book-subtitle {
-  font-size: 1.15em;
-  font-style: italic;
-  margin: 0 0 2em 0;
-}
-
-.titlepage .book-authors {
-  font-size: 1.15em;
-  margin: 2em 0 0.4em 0;
-}
-
-.titlepage .book-imprint,
-.titlepage .book-source {
-  font-size: 0.88em;
-  margin: 0.3em 0;
-  font-style: normal;
-}
-
-.part-title {
-  page-break-before: always;
-  break-before: page;
-}
-
-.part-title h1,
-.part-title h2,
-.part-title .part-number {
-  text-align: center;
-}
-
-.colophon {
-  page-break-before: always;
-  break-before: page;
-  font-size: 0.92em;
-}
-
-.colophon h1,
-.colophon h2 {
-  text-align: center;
-  font-size: 1.25em;
-}
-
-.colophon p {
-  text-align: left;
-  hyphens: manual;
-}
-
-/* Table of contents page (text/contents.xhtml). */
-.toc-page {
-  page-break-before: always;
-  break-before: page;
-}
-
-.toc-page h1,
-.toc-page h2 {
-  text-align: center;
-  margin-bottom: 1.4em;
-}
-
-.toc-page ol,
-.toc-page ul {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-}
-
-.toc-page li {
-  margin: 0.35em 0;
-  text-align: left;
-  hyphens: manual;
-}
-
-.toc-page a {
-  color: inherit;
-  text-decoration: none;
-}
-
-.toc-page .toc-level-1 {
-  font-weight: bold;
-  margin-top: 1em;
-  font-size: 1.02em;
-}
-
-.toc-page .toc-level-2 {
-  font-weight: normal;
-}
-
-.toc-page .toc-level-3,
-.toc-page .toc-level-4 {
-  font-size: 0.94em;
-  margin-left: 1.4em;
-}
-
-/* If the converter keeps LaTeXML's own TOC markup, keep it tidy. */
-.ltx_TOC,
-.ltx_toclist {
-  list-style: none;
-  padding-left: 0;
-  margin: 0 0 1em 0;
-}
-
-.ltx_tocentry {
-  margin: 0.2em 0;
-  text-align: left;
-}
-
-.ltx_tocentry_part,
-.ltx_tocentry_chapter,
-.ltx_tocentry_section {
-  font-weight: bold;
-}
-
-.ltx_tocentry_subsection,
-.ltx_tocentry_subsubsection {
-  margin-left: 1.2em;
-  font-size: 0.94em;
-}
-
-/* --------------------------------------------------------------------------
-   4. Cover page
-   -------------------------------------------------------------------------- */
-
-.cover-page {
-  margin: 0;
-  padding: 0;
-  text-align: center;
-  page-break-after: always;
-  break-after: page;
-}
-
-.cover-page img {
-  display: block;
-  width: 100%;
-  max-width: 100%;
-  height: auto;
-  margin: 0 auto;
-  border: 0;
-}
-
-/* --------------------------------------------------------------------------
-   5. Mathematics 鈥?image variant (<img class="m">, .mblock)
-   The converter writes inline math as
-     <img class="m" src="../math/<key>.svg" style="width:..ex;height:..ex;
-          vertical-align:-..ex"/>
-   and display math as <div class="mblock"><img class="m" .../></div>.
-   -------------------------------------------------------------------------- */
-
-img.m {
-  display: inline-block;
-  max-width: 100%;
-  border: 0;
-  /* `vertical-align` is intentionally NOT set here: the converter already
-     encodes the formula depth in an inline style and an inline style wins. */
-}
-
-.mblock {
-  display: block;
-  text-align: center;
-  margin: 0.8em 0;
-  page-break-inside: avoid;
-  break-inside: avoid;
-}
-
-/* Width only. The converter's inline style carries `height:auto` on every
-   <img class="m">; declaring a height here would fight it, so this rule keeps
-   to the horizontal bound that makes an over-wide formula shrink. */
-.mblock img,
-.mblock img.m {
-  max-width: 100%;
-}
-
-/* Numbered display equations.  LaTeXML renders them either as a real
-   <table class="ltx_equation ltx_eqn_table"> or as a span-based
-   table (ltx_eqn_row / ltx_eqn_cell).  Both are handled. */
-.ltx_equation {
-  text-align: center;
-}
-
-.ltx_eqn_table {
-  display: table;
-  width: 100%;
-  max-width: 100%;
-  margin: 0.8em 0;
-  border-collapse: collapse;
-  page-break-inside: avoid;
-  break-inside: avoid;
-}
-
-.ltx_eqn_row {
-  display: table-row;
-}
-
-.ltx_eqn_cell {
-  display: table-cell;
-  vertical-align: baseline;
-  padding: 0.1em 0;
-}
-
-.ltx_eqn_cell.ltx_align_center {
-  text-align: center;
-}
-
-/* symmetric padding either side of a centred equation */
-.ltx_eqn_center_padleft,
-.ltx_eqn_center_padright {
-  width: 2.5em;
-}
-
-/* the equation number, right-aligned in its own column */
-.ltx_eqn_eqno,
-.ltx_eqn_cell.ltx_align_right,
-.ltx_eqn_eqno .ltx_tag,
-.ltx_tag_equation {
-  text-align: right;
-  white-space: nowrap;
-  font-weight: normal;
-}
-
-.ltx_eqn_eqno {
-  width: 4em;
-  padding-left: 0.5em;
-}
-
-/* Multi-line aligned systems: keep rows tight. */
-.ltx_equationgroup {
-  margin: 0.8em 0;
-  page-break-inside: avoid;
-  break-inside: avoid;
-}
-
-/* MathML variant (mathml build): the <math> element is inlined as-is. */
-math {
-  font-size: 1em;
-  max-width: 100%;
-  font-family: 'STIX Two Math', 'Latin Modern Math', 'Cambria Math',
-               'STIXGeneral', serif;
-}
-
-math[display="block"] {
-  display: block;
-  margin: 0.8em 0;
-  text-align: center;
-}
-
-/* Inline math should sit on the baseline and never force a line break. */
-.ltx_Math {
-  display: inline;
-  white-space: nowrap;
-}
-
-/* Keep unparsed/error math visible but unobtrusive. */
-.ltx_math_unparsed,
-.ltx_ERROR {
-  font-family: ui-monospace, 'DejaVu Sans Mono', Consolas, monospace;
-  font-size: 0.9em;
-}
-
-/* --------------------------------------------------------------------------
-   6. Code / algorithms / verbatim
-   -------------------------------------------------------------------------- */
-
-pre,
-code,
-kbd,
-samp,
-.ltx_verbatim,
-.ltx_listing,
-.ltx_listingline,
-.ltx_font_typewriter {
-  font-family: ui-monospace, 'DejaVu Sans Mono', Consolas, monospace;
-}
-
-code,
-kbd,
-samp,
-.ltx_font_typewriter {
-  font-size: 0.85em;
-  white-space: pre-wrap;
-  overflow-wrap: anywhere;
-}
-
-pre,
-.ltx_verbatim,
-.ltx_listing {
-  font-size: 0.78em;
-  line-height: 1.35;
-  white-space: pre-wrap;
-  word-wrap: break-word;
-  overflow-wrap: anywhere;
-  text-align: left;
-  hyphens: manual;
-  margin: 0.9em 0;
-  padding: 0.6em 0.7em;
-  background:none;
-  border-left:2px solid #000000;
-  /* long listings must be allowed to break across pages */
-  page-break-inside: auto;
-  break-inside: auto;
-}
-
-/* LaTeXML line-based listings: one block per line, indentation preserved.
-   `white-space` is deliberately NOT set here so the value is inherited:
-   `normal` (collapsing LaTeXML's source indentation) for the div-based
-   variant, `pre-wrap` when the converter wraps the listing in <pre>. */
-.ltx_listingline {
-  display: block;
-  margin: 0;
-  padding: 0;
-  min-height: 1.35em;
-  text-align: left;
-}
-
-/* line numbers / tags inside listings */
-.ltx_tag_listingline,
-.ltx_tag_float {
-  font-weight: normal;
-  opacity:1;
-  margin-right: 0.6em;
-}
-
-/* nested listings inside a block quote should not double-indent */
-pre pre,
-.ltx_listing .ltx_listing {
-  margin: 0;
-  padding: 0;
-  border: 0;
-  background: none;
-}
-
-/* --------------------------------------------------------------------------
-   7. Tables
-   -------------------------------------------------------------------------- */
-
-table {
-  border-collapse: collapse;
-  width: 100%;
-  margin: 0.9em 0;
-  font-size: 1em;
-  word-break: normal;
-  overflow-wrap: normal;
-  page-break-inside: avoid;
-  break-inside: avoid;
-}
-
-/* A real data table usually wants its own width, centred. */
-table.ltx_tabular {
-  width: auto;
-  max-width: 100%;
-  margin-left: auto;
-  margin-right: auto;
-}
-
-th,
-td {
-  padding: 0.28em 0.5em;
-  vertical-align: top;
-  text-align: left;
-  word-break: normal;
-  overflow-wrap: normal;
-  hyphens: manual;
-}
-
-th,
-.ltx_th {
-  font-weight: bold;
-}
-
-caption {
-  caption-side: top;
-  font-size: 0.9em;
-  text-align: left;
-  margin-bottom: 0.4em;
-}
-
-/* Wide numeric tables: shrink a little rather than overflow. */
-.ltx_tabular th,
-.ltx_tabular td {
-  font-size: 0.85em;
-}
-
-/* Cell alignment classes emitted by LaTeXML. */
-.ltx_align_left   { text-align: left; }
-.ltx_align_center { text-align: center; }
-.ltx_align_right  { text-align: right; }
-.ltx_align_middle { vertical-align: middle; }
-.ltx_align_top    { vertical-align: top; }
-.ltx_align_bottom { vertical-align: bottom; }
-.ltx_align_baseline { vertical-align: baseline; }
-
-.ltx_centering {
-  margin-left: auto;
-  margin-right: auto;
-  text-align: center;
-}
-
-/* LaTeXML draws booktabs rules with border classes on th/td:
-   ltx_border_tt = top rule of the table, ltx_border_t = rule above a row,
-   ltx_border_b = rule below a row, ltx_border_bb = bottom rule.
-   A rule under the header is the minimum a reader needs. */
-.ltx_border_tt,
-.ltx_border_t {
-  border-top: 1px solid currentColor;
-}
-
-.ltx_border_b,
-.ltx_border_bb {
-  border-bottom: 1px solid currentColor;
-}
-
-.ltx_border_l { border-left: 1px solid currentColor; }
-.ltx_border_r { border-right: 1px solid currentColor; }
-
-/* Rules are decorative; don't let them look heavy. */
-.ltx_border_tt,
-.ltx_border_t,
-.ltx_border_b,
-.ltx_border_bb,
-.ltx_border_l,
-.ltx_border_r {
-  border-color:#000;
-}
-
-/* The thead keeps its rule when the table breaks across pages. */
-thead {
-  display: table-header-group;
-}
-
-/* Multi-panel figures/tables use a flex layout in LaTeXML HTML. */
-.ltx_flex_figure,
-.ltx_flex_table {
-  display: block;
-  width: 100%;
-  margin: 0.8em 0;
-}
-
-.ltx_flex_cell {
-  display: inline-block;
-  vertical-align: middle;
-  max-width: 100%;
-  margin: 0.2em 0;
-}
-
-.ltx_flex_size_1 { width: 100%; }
-.ltx_flex_size_2 { width: 49%; }
-.ltx_flex_size_3 { width: 32%; }
-.ltx_flex_size_4 { width: 24%; }
-
-.ltx_minipage {
-  display: inline-block;
-  vertical-align: middle;
-  max-width: 100%;
-}
-
-/* --------------------------------------------------------------------------
-   8. Figures & captions
-   -------------------------------------------------------------------------- */
-
-figure,
-.ltx_figure,
-.ltx_float {
-  display: block;
-  margin: 1.1em 0;
-  text-align: center;
-  page-break-inside: avoid;
-  break-inside: avoid;
-}
-
-figure img,
-figure svg,
-.ltx_graphics,
-.ltx_figure img {
-  max-width: 100%;
-  height: auto;
-  border: 0;
-}
-
-/* LaTeXML wraps downloaded figures in <object type="image/svg+xml">.
-   If the converter keeps <object>, keep it centred and bounded. */
-.ltx_graphics {
-  display: inline-block;
-}
-
-figcaption,
-.ltx_caption {
-  font-size: 0.9em;
-  line-height: 1.4;
-  text-align: left;
-  margin: 0.5em 0 0 0;
-  font-style: italic;
-  hyphens: manual;
-}
-
-figcaption .ltx_tag,
-.ltx_caption .ltx_tag {
-  font-style: normal;
-  font-weight: bold;
-}
-
-/* Percentage font-sizes inside captions come from LaTeXML inline styles;
-   leave them alone (they are already relative). */
-
-/* --------------------------------------------------------------------------
-   9. Theorem-like environments
-   The book's LaTeX styles already italicise statement bodies (LaTeXML emits
-   <span class="ltx_font_italic"> for them), so the block styling below is
-   what makes a theorem read as a theorem: a rule, a tint, an indent and a
-   bold run-in label.  Proofs, definitions, examples and remarks are upright
-   by LaTeX convention and are explicitly kept upright.
-   -------------------------------------------------------------------------- */
-
-.ltx_theorem {
-  display: block;
-  margin: 1em 0;
-  padding: 0.15em 0 0.15em 0.9em;
-  border-left:2px solid #000000;
-  font-size: 1em;
-  page-break-inside: avoid;
-  break-inside: avoid;
-}
-
-/* The framed span LaTeXML puts around a theorem body: it carries the border,
-   so make it a block and drop the decoration we already put on the parent. */
-.ltx_theorem .ltx_inline-logical-block,
-.ltx_theorem .ltx_framed_rectangle {
-  display: block;
-  border: 0;
-  padding: 0;
-  margin: 0;
-}
-
-.ltx_theorem > .ltx_para,
-.ltx_theorem > div {
-  margin: 0;
-}
-
-/* Run-in "Theorem 1.2.3." label */
-.ltx_theorem .ltx_title_theorem,
-.ltx_theorem .ltx_runin {
-  display: inline;
-  font-weight: bold;
-  font-style: normal;
-  margin: 0;
-}
-
-.ltx_theorem .ltx_tag_theorem {
-  font-weight: bold;
-  font-style: normal;
-}
-
-/* Statement-style environments read as italic. */
-.ltx_theorem_theorem,
-.ltx_theorem_proposition,
-.ltx_theorem_lemma,
-.ltx_theorem_corollary,
-.ltx_theorem_claim,
-.ltx_theorem_conjecture {
-  font-style: italic;
-}
-
-/* Definition/example/remark/proof bodies are upright in this book. */
-.ltx_theorem_definition,
-.ltx_theorem_example,
-.ltx_theorem_remark,
-.ltx_theorem_proof,
-.ltx_theorem_note {
-  font-style: normal;
-}
-
-/* Keep labels upright inside any italic theorem body. */
-.ltx_theorem .ltx_tag,
-.ltx_theorem .ltx_title {
-  font-style: normal;
-}
-
-/* Proofs get a lighter rule and a slightly smaller body. */
-.ltx_theorem_proof {
-  border-left:1px solid #000000;
-  font-size: 0.98em;
-}
-
-/* Definitions get a gentle tint so they are findable by flipping pages. */
-.ltx_theorem_definition {
-  background:none;
-  padding: 0.5em 0.6em 0.5em 0.9em;
-}
-
-/* Framed/decorated boxes emitted by LaTeXML (\framebox, tcolorbox). */
-.ltx_framed {
-  display: block;
-}
-
-.ltx_framed_rectangle {
-  display: block;
-  border: 1px solid rgba(0, 0, 0, 0.3);
-  padding: 0.55em 0.7em;
-  margin: 0.9em 0;
-}
-
-.ltx_framed_topbottom {
-  display: block;
-  border-top:1px solid #000;
-  border-bottom:1px solid #000;
-  padding: 0.45em 0;
-  margin: 0.9em 0;
-}
-
-/* --------------------------------------------------------------------------
-   10. Lists
-   -------------------------------------------------------------------------- */
-
-ul, ol {
-  margin: 0.55em 0 0.7em 0;
-  padding-left: 1.4em;
-}
-
-li {
-  margin: 0.18em 0;
-  text-align: left;
-}
-
-/* Nested lists are tighter and less indented. */
-li > ul,
-li > ol {
-  margin: 0.15em 0 0.2em 0;
-  padding-left: 1.15em;
-}
-
-li > p {
-  margin: 0.15em 0;
-}
-
-/* LaTeXML itemize/enumerate */
-.ltx_itemize,
-.ltx_enumerate {
-  margin: 0.55em 0 0.7em 0;
-  padding-left: 1.4em;
-}
-
-.ltx_item {
-  display: list-item;
-  margin: 0.18em 0;
-}
-
-.ltx_tag_item {
-  font-weight: bold;
-  font-style: normal;
-}
-
-dl {
-  margin: 0.7em 0;
-}
-
-dt {
-  font-weight: bold;
-}
-
-dd {
-  margin: 0 0 0.4em 1.4em;
-}
-
-/* --------------------------------------------------------------------------
-   11. Links, citations, references
-   Readers draw their own link affordances; inheriting the text colour keeps
-   night mode and sepia themes readable.
-   -------------------------------------------------------------------------- */
-
-a,
-a[href] {
-  color: inherit;
-  text-decoration: none;
-}
-
-.ltx_ref,
-.ltx_cite,
-.ltx_href,
-.ltx_url {
-  color: inherit;
-  text-decoration: none;
-}
-
-/* Reference numbers and citation tags stay compact. */
-.ltx_ref_tag,
-.ltx_tag_ref {
-  font-weight: normal;
-}
-
-/* --------------------------------------------------------------------------
-   12. Bibliography
-   -------------------------------------------------------------------------- */
-
-.ltx_bibliography {
-  margin-top: 1.5em;
-}
-
-.ltx_bibliography .ltx_title_bibliography,
-.ltx_title_bibliography {
-  text-align: center;
-  margin: 1.6em 0 1em 0;
-}
-
-.ltx_biblist {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-}
-
-.ltx_bibitem,
-.ltx_bibblock {
-  display: block;
-  margin: 0 0 0.55em 0;
-  padding-left: 2.2em;
-  text-indent: -2.2em;      /* hanging indent */
-  font-size: 0.94em;
-  text-align: left;
-  hyphens: manual;
-}
-
-.ltx_tag_bibitem {
-  font-weight: normal;
-}
-
-/* --------------------------------------------------------------------------
-   13. Abstract / miscellaneous front matter
-   -------------------------------------------------------------------------- */
-
-.ltx_abstract {
-  margin: 1.4em 0;
-  padding: 0.7em 0.9em;
-  background:none;
-  font-size: 0.97em;
-}
-
-.ltx_title_abstract {
-  font-size: 1em;
-  text-align: center;
-  margin: 0 0 0.6em 0;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-}
-
-.ltx_authors,
-.ltx_creator {
-  text-align: center;
-  font-size: 1.05em;
-}
-
-.ltx_role_author .ltx_personname {
-  font-style: normal;
-}
-
-/* Anything the converter needs to keep off the page. */
-.hidden,
-.is-hidden {
-  display: none;
-}
-
-/* --------------------------------------------------------------------------
-   14. Converter-emitted layout
-   Classes produced by the build converter (not by LaTeXML): equation rows
-   built from spans, align* groups kept as real tables, figure images, the
-   title page, the contents list and the colophon. This section comes last so
-   that it wins over the generic LaTeXML vocabulary above where both apply.
-   -------------------------------------------------------------------------- */
-
-/* equation layout */
-.eqblock, .eqgroup { display:block; margin:0.85em 0; }
-.eqrow { display:flex; align-items:baseline; justify-content:center; }
-.eqrow .eqcell { flex:0 1 auto; text-align:center; padding:0 0.15em; }
-.eqcell.ltx_align_right { text-align:right; }
-.eqcell.ltx_align_left  { text-align:left;  }
-.eqno { flex:0 0 auto; margin-left:auto; padding-left:1em; text-align:right;
-        white-space:nowrap; font-size:0.92em; }
-
-/* align* groups keep real table markup */
-table.eqtable { border-collapse:collapse; width:auto; max-width:100%; margin:0.85em auto; }
-table.eqtable td { padding:0.1em 0.35em; vertical-align:baseline; border:0; }
-table.eqtable td.eqcell { text-align:center; }
-table.eqtable td.eqcell.ltx_align_right { text-align:right; }
-table.eqtable td.eqcell.ltx_align_left  { text-align:left;  }
-table.eqtable td.eqno { text-align:right; white-space:nowrap; font-size:0.92em; }
-
-/* figures + front/back matter */
-img.figimg { display:block; margin:0.6em auto; max-width:100%; height:auto; }
-.titlepage { text-align:center; margin-top:16%; }
-h1.booktitle { font-size:1.9em; line-height:1.25; margin:0 0 0.9em 0; }
-.bookauthors { font-size:1.15em; margin:0.2em 0; }
-.bookaffil, .bookversion, .bookarxiv { font-size:0.88em; color:#000; margin:0.15em 0; }
-.bookabstract { text-align:left; margin-top:2.2em; font-size:0.92em; }
-.bookabstract h2 { font-size:1.05em; text-align:center; }
-ul.toc { list-style:none; padding-left:0; }
-ul.toc li { margin:0.18em 0; }
-ul.toc .toc-l1 { font-weight:bold; margin-top:0.7em; }
-ul.toc .toc-l2 { padding-left:1.2em; }
-ul.toc .toc-l3 { padding-left:2.4em; font-size:0.94em; }
-.colophon { font-size:0.92em; }
-
-/* Nothing may exceed the reading column.
-   A display equation is an <img> with a fixed width in `ex`; when the column is narrower
-   than the equation the picture has to shrink, and for that every ancestor that would
-   otherwise report a min-content width has to become a definite-width box:
-     - framed theorem boxes are display:block, so max-width:100% gives them the column width;
-     - align* tables get <colgroup> widths in ex from the converter + table-layout:fixed,
-       so the columns shrink proportionally and the "=" signs stay in one column.
-   `min-width:0` on flex cells is what stops a single wide formula from forcing the row
-   wider than the column. Images keep `height:auto`, so shrinking never distorts them. */
-.ltx_inline-logical-block,
-.ltx_framed,
-.ltx_framed_rectangle { max-width:100%; box-sizing:border-box; }
-
-table.eqtable { table-layout:fixed; }
-table.eqtable td { box-sizing:border-box; padding:0.1em 0.2em; }
-table.eqtable td.eqcell img.m { max-width:100%; }
-
-.eqrow .eqcell { min-width:0; }
-.eqrow img.m { max-width:100%; }
-
-/* Very narrow reading columns (phones). A real <table> cannot be scaled below the width of its
-   contents: `max-width` is not honoured for `table-layout:fixed` tables with a specified
-   width (verified in Chromium: computed max-width:100% but used width 622px in a 317px column).
-   So below 640px the align* group is re-flowed as flex rows, which do shrink (`min-width:0`
-   + `max-width:100%` on the images). Above 640px the genuine table layout is kept, so the
-   "=" signs stay in one column across rows 鈥?that alignment is the whole point of align*.
-   `!important` here only overrides the per-table `width:Nex` the converter writes inline. */
-@media (max-width: 640px) {
-  table.eqtable { display:block; width:auto !important; max-width:100%; table-layout:auto; }
-  table.eqtable colgroup { display:none; }
-  table.eqtable tbody { display:block; }
-  table.eqtable tr { display:flex; align-items:baseline; justify-content:center; }
-  table.eqtable td { display:block; flex:0 1 auto; min-width:0; }
-  table.eqtable td.eqno { flex:0 0 auto; margin-left:auto; padding-left:0.7em; }
-}
-
-/* ==========================================================================
-   E-INK BILINGUAL  (appended by tools/convert/apply_eink_css.py)
-   Pure black ink on white paper: no grey text, no tinted panels. The Chinese
-   line is the primary text; the English original sits under it, smaller, in the
-   same black ink. Nothing is distinguished by colour.
-   ========================================================================== */
-
-html, body { background: #ffffff; color: #000000; }
-a, a:visited, a:link { color: #000000; text-decoration: underline; }
-.bookaffil, .bookversion, .bookarxiv, .booksubtitle { color: #000000; }
-
-hr, .ltx_rule { opacity: 1; border-color: #000000; background-color: #000000; }
-.ltx_framed_rectangle, .ltx_framed_topbottom, .ltx_framed_bottomtop {
-  border-color: #000000; background: none;
-}
-.ltx_border_tt, .ltx_border_t, .ltx_border_b, .ltx_border_bb,
-.ltx_border_l, .ltx_border_r { border-color: #000000; }
-.ltx_theorem, .ltx_proof, .ltx_listing, pre, code,
-table, tr, td, th, figure, blockquote { background: none; }
-pre, code { border-color: #000000; }
-
-/* --------------------------------------------------------------------------
-   One translated block = Chinese line, then the English original.
-
-   Pair cohesion is the point of a facing-text edition: a reader must never turn
-   a page between a Chinese sentence and the English it translates. The two
-   break hints keep the pair on one page in engines that honour either the
-   modern `break-*` or the legacy `page-break-*` property, and orphans/widows
-   stop a three-line block from being split 1+2.
-   -------------------------------------------------------------------------- */
-.tn-zh {
-  display: block;
-  color: #000000;
-  /* CJK needs more leading than Latin at the same size; 1.55 is already the
-     body default and too tight for a serif CJK face on e-ink */
-  line-height: 1.70;
-  orphans: 2; widows: 2;
-  break-after: avoid; page-break-after: avoid;
-}
-.tn-en {
-  display: block;
-  color: #000000;
-  font-size: 0.84em;
-  line-height: 1.40;
-  margin-top: 0.10em;
-  orphans: 2; widows: 2;
-  break-before: avoid; page-break-before: avoid;
-}
-
-/* --------------------------------------------------------------------------
-   Headings: the Chinese title is the real title and keeps the full heading
-   size; the English title is a secondary label. The treatment follows the role
-   of the heading, not just its level:
-
-   * h1-h4 are display titles (part/chapter/section/subsection). The English
-     goes on its own line underneath in lighter type, which is consistent, never
-     leaves a ragged English fragment, and lets the Chinese title stay the
-     dominant mark.
-   * h5/h6 are run-in labels (paragraph titles, and LaTeXML's
-     ltx_title_theorem, i.e. every "Definition 2.1.1 (…)" box header). Stacking
-     those would double the height of ~700 inline labels, so the English trails
-     the Chinese label inline and wraps naturally when the line is full.
-   -------------------------------------------------------------------------- */
-.tn-zh-inline { display: inline; }   /* heading default; h1-h4 override to block */
-h1 .tn-zh-inline, h2 .tn-zh-inline, h3 .tn-zh-inline, h4 .tn-zh-inline {
-  display: block; font-size: 1em; line-height: 1.28;
-}
-h1 .tn-en, h2 .tn-en {
-  display: block; font-size: 0.56em; font-weight: normal; line-height: 1.32;
-  margin: 0.16em 0 0 0;
-}
-h3 .tn-en, h4 .tn-en {
-  display: block; font-size: 0.66em; font-weight: normal; line-height: 1.30;
-  margin: 0.12em 0 0 0;
-}
-h5 .tn-zh, h6 .tn-zh, h5 .tn-zh-inline, h6 .tn-zh-inline {
-  display: inline; font-size: 1em; line-height: 1.45;
-}
-h5 .tn-en, h6 .tn-en {
-  display: inline; font-size: 0.66em; font-weight: normal; line-height: 1.45;
-  margin-left: 0.45em;
-}
-/* a section opening with a bilingual heading should not push the first
-   paragraph onto the next page on its own */
-h1 + .ltx_para, h2 + .ltx_para, h3 + .ltx_para { break-before: avoid; }
-
-/* inside a table cell the pair must not add outer spacing or big leading */
-td .tn-zh, th .tn-zh { line-height: 1.35; }
-td .tn-en, th .tn-en { margin-top: 0.05em; font-size: 0.82em; line-height: 1.30; }
-
-/* the table of contents repeats both titles: `Chinese · English` with the
-   separator doing the work that a second line would do */
-.toc a, .toc-page a { color: #000000; text-decoration: none; line-height: 1.45; }
-
-/* title page: the edition label above, the Chinese title under the English one */
-.bookedition {
-  color: #000000; font-size: 0.82em; letter-spacing: 0.02em;
-  margin: 0 0 1.4em 0; text-align: center;
-}
-.booktitle-zh {
-  color: #000000; font-size: 1.42em; font-weight: bold;
-  margin: 0.55em 0 0.2em 0; text-align: center; letter-spacing: 0.06em;
-}
+﻿/* ==========================================================================
+
+   book.css 鈥?reading stylesheet for
+
+   "The Elements of Differentiable Programming" (arXiv:2403.14606)
+
+
+
+   Owned by tools/epubkit/.  pack.py always injects THIS file as
+
+   OEBPS/styles/book.css and ignores any styles/ directory found in the
+
+   build directory, so this file is the single source of typographic truth.
+
+
+
+   Design contract:
+
+     * never pin a body font family 鈥?`serif` lets the reader choose;
+
+     * never set a px font-size on body 鈥?sizes are relative (em) so the
+
+       reader's font-size setting always wins;
+
+     * no `!important`, no `@import`, no remote fonts, no vendor prefixes;
+
+     * every rule degrades to plain upright text if a reader ignores it.
+
+
+
+   The selectors mirror the LaTeXML 0.7.6 class vocabulary actually emitted
+
+   by html/book.html (ltx_title_chapter, ltx_eqn_table, ltx_theorem, ...),
+
+   plus the small set of EPUB-internal classes emitted by the converter
+
+   (.chapter-start, .mblock, .cover-page, .titlepage, .part-title,
+
+   .colophon, .toc-page).
+
+   ========================================================================== */
+
+
+
+/* --------------------------------------------------------------------------
+
+   1. Page & text base
+
+   -------------------------------------------------------------------------- */
+
+
+
+html {
+
+  /* keep the reader's own base size; 100% == inherit */
+
+  font-size: 100%;
+
+}
+
+
+
+body {
+
+  /* Let the reading system pick the serif face; do not hard-pin one. */
+
+  font-family: serif;
+
+  font-size: 1em;              /* inherit the reader setting, never px/pt */
+
+  line-height: 1.5;
+
+  margin: 0 4%;
+
+  padding: 0;
+
+  text-align: justify;
+
+  hyphens: auto;
+
+  word-wrap: break-word;
+
+  overflow-wrap: break-word;
+
+  /* no `color`: readers invert colours for night mode */
+
+}
+
+
+
+/* Paragraphs: small space between, no first-line indent (e-reader idiom). */
+
+p,
+
+.ltx_p {
+
+  margin: 0 0 0.55em 0;
+
+  text-indent: 0;
+
+}
+
+
+
+/* LaTeXML wraps block content in <div class="ltx_para">; do not let it add
+
+   space on top of <p>. */
+
+.ltx_para {
+
+  margin: 0;
+
+  padding: 0;
+
+}
+
+
+
+/* The converter may keep LaTeXML's inline logical blocks as <span>; make
+
+   them behave like the blocks they represent. */
+
+.ltx_block,
+
+.ltx_inline-logical-block {
+
+  display: block;
+
+}
+
+
+
+/* Horizontal rules / page breaks emitted by LaTeXML. */
+
+hr,
+
+.ltx_break {
+
+  border: 0;
+
+  border-top: 1px solid currentColor;
+
+  margin: 1.2em 0;
+
+  opacity:1;
+
+}
+
+
+
+br.ltx_break {
+
+  display: inline;
+
+  border: 0;
+
+  opacity: 1;
+
+}
+
+
+
+/* --------------------------------------------------------------------------
+
+   2. Headings
+
+   The real book: document title h1, parts h2, chapters h3, sections h4,
+
+   subsections h5, subsubsections/run-in headings h6.  Sizes are relative so
+
+   everything scales with the reader's base size.
+
+   -------------------------------------------------------------------------- */
+
+
+
+h1, h2, h3, h4, h5, h6,
+
+.ltx_title {
+
+  font-family: inherit;
+
+  font-weight: bold;
+
+  font-style: normal;
+
+  line-height: 1.25;
+
+  text-align: left;
+
+  text-indent: 0;
+
+  hyphens: manual;
+
+  /* keep a heading glued to the text that follows it */
+
+  page-break-after: avoid;
+
+  break-after: avoid;
+
+  page-break-inside: avoid;
+
+  break-inside: avoid;
+
+}
+
+
+
+h1 { font-size: 1.9em;  margin: 0 0 0.8em 0; }
+
+h2 { font-size: 1.55em; margin: 1.6em 0 0.6em 0; }
+
+h3 { font-size: 1.32em; margin: 1.5em 0 0.55em 0; }
+
+h4 { font-size: 1.15em; margin: 1.3em 0 0.45em 0; }
+
+h5 { font-size: 1.02em; margin: 1.2em 0 0.4em 0; }
+
+h6 { font-size: 1em;    margin: 1.1em 0 0.35em 0; }
+
+
+
+/* A part/chapter opener starts a new page.  The converter puts
+
+   class="chapter-start" on the chapter <h1>; nothing else forces a break. */
+
+.chapter-start {
+
+  page-break-before: always;
+
+  break-before: page;
+
+  margin-top: 0;
+
+}
+
+
+
+/* Run-in headings (theorem / proof labels) must flow inline with the text.
+
+   LaTeXML marks them <h6 class="ltx_title ltx_runin ltx_title_theorem">. */
+
+h1.ltx_runin, h2.ltx_runin, h3.ltx_runin, h4.ltx_runin,
+
+h5.ltx_runin, h6.ltx_runin,
+
+.ltx_runin {
+
+  display: inline;
+
+  font-size: 1em;
+
+  margin: 0;
+
+  padding: 0;
+
+  line-height: inherit;
+
+  page-break-after: auto;
+
+  break-after: auto;
+
+}
+
+
+
+/* Numbering tags ("Chapter 2", "2.1", "Figure 1.1") are part of the heading
+
+   text; keep them upright and bold, with a hair of space after the number. */
+
+.ltx_tag {
+
+  font-weight: bold;
+
+  font-style: normal;
+
+}
+
+
+
+.ltx_tag_part,
+
+.ltx_tag_chapter {
+
+  display: block;
+
+  font-size: 0.72em;
+
+  letter-spacing: 0.08em;
+
+  text-transform: uppercase;
+
+  font-weight: bold;
+
+  margin: 0 0 0.6em 0;
+
+  opacity:1;
+
+}
+
+
+
+/* Part openers and chapter openers: centred, generous top margin. */
+
+.ltx_title_part,
+
+.part-title {
+
+  text-align: center;
+
+  margin: 2.5em 0 1.5em 0;
+
+  page-break-after: avoid;
+
+  break-after: avoid;
+
+}
+
+
+
+.ltx_part {
+
+  page-break-before: always;
+
+  break-before: page;
+
+}
+
+
+
+.ltx_title_chapter,
+
+.chapter-title {
+
+  text-align: center;
+
+  margin: 1.5em 0 1.2em 0;
+
+  page-break-after: avoid;
+
+  break-after: avoid;
+
+}
+
+
+
+/* Unnumbered paragraph-level subheads keep the body size but go bold. */
+
+.ltx_title_paragraph,
+
+.ltx_paragraph h6,
+
+h6.ltx_title_paragraph {
+
+  font-size: 1em;
+
+  font-weight: bold;
+
+  margin: 1.1em 0 0.35em 0;
+
+}
+
+
+
+/* --------------------------------------------------------------------------
+
+   3. Title page / colophon / TOC page (converter-emitted front matter)
+
+   -------------------------------------------------------------------------- */
+
+
+
+.titlepage {
+
+  text-align: center;
+
+  margin: 18% 0 0 0;
+
+  page-break-after: always;
+
+  break-after: page;
+
+}
+
+
+
+.titlepage h1,
+
+.titlepage .book-title {
+
+  font-size: 2.1em;
+
+  line-height: 1.2;
+
+  margin: 0 0 1.2em 0;
+
+  text-align: center;
+
+}
+
+
+
+.titlepage .book-subtitle {
+
+  font-size: 1.15em;
+
+  font-style: italic;
+
+  margin: 0 0 2em 0;
+
+}
+
+
+
+.titlepage .book-authors {
+
+  font-size: 1.15em;
+
+  margin: 2em 0 0.4em 0;
+
+}
+
+
+
+.titlepage .book-imprint,
+
+.titlepage .book-source {
+
+  font-size: 0.88em;
+
+  margin: 0.3em 0;
+
+  font-style: normal;
+
+}
+
+
+
+.part-title {
+
+  page-break-before: always;
+
+  break-before: page;
+
+}
+
+
+
+.part-title h1,
+
+.part-title h2,
+
+.part-title .part-number {
+
+  text-align: center;
+
+}
+
+
+
+.colophon {
+
+  page-break-before: always;
+
+  break-before: page;
+
+  font-size: 0.92em;
+
+}
+
+
+
+.colophon h1,
+
+.colophon h2 {
+
+  text-align: center;
+
+  font-size: 1.25em;
+
+}
+
+
+
+.colophon p {
+
+  text-align: left;
+
+  hyphens: manual;
+
+}
+
+
+
+/* Table of contents page (text/contents.xhtml). */
+
+.toc-page {
+
+  page-break-before: always;
+
+  break-before: page;
+
+}
+
+
+
+.toc-page h1,
+
+.toc-page h2 {
+
+  text-align: center;
+
+  margin-bottom: 1.4em;
+
+}
+
+
+
+.toc-page ol,
+
+.toc-page ul {
+
+  list-style: none;
+
+  margin: 0;
+
+  padding: 0;
+
+}
+
+
+
+.toc-page li {
+
+  margin: 0.35em 0;
+
+  text-align: left;
+
+  hyphens: manual;
+
+}
+
+
+
+.toc-page a {
+
+  color: inherit;
+
+  text-decoration: none;
+
+}
+
+
+
+.toc-page .toc-level-1 {
+
+  font-weight: bold;
+
+  margin-top: 1em;
+
+  font-size: 1.02em;
+
+}
+
+
+
+.toc-page .toc-level-2 {
+
+  font-weight: normal;
+
+}
+
+
+
+.toc-page .toc-level-3,
+
+.toc-page .toc-level-4 {
+
+  font-size: 0.94em;
+
+  margin-left: 1.4em;
+
+}
+
+
+
+/* If the converter keeps LaTeXML's own TOC markup, keep it tidy. */
+
+.ltx_TOC,
+
+.ltx_toclist {
+
+  list-style: none;
+
+  padding-left: 0;
+
+  margin: 0 0 1em 0;
+
+}
+
+
+
+.ltx_tocentry {
+
+  margin: 0.2em 0;
+
+  text-align: left;
+
+}
+
+
+
+.ltx_tocentry_part,
+
+.ltx_tocentry_chapter,
+
+.ltx_tocentry_section {
+
+  font-weight: bold;
+
+}
+
+
+
+.ltx_tocentry_subsection,
+
+.ltx_tocentry_subsubsection {
+
+  margin-left: 1.2em;
+
+  font-size: 0.94em;
+
+}
+
+
+
+/* --------------------------------------------------------------------------
+
+   4. Cover page
+
+   -------------------------------------------------------------------------- */
+
+
+
+.cover-page {
+
+  margin: 0;
+
+  padding: 0;
+
+  text-align: center;
+
+  page-break-after: always;
+
+  break-after: page;
+
+}
+
+
+
+.cover-page img {
+
+  display: block;
+
+  width: 100%;
+
+  max-width: 100%;
+
+  height: auto;
+
+  margin: 0 auto;
+
+  border: 0;
+
+}
+
+
+
+/* --------------------------------------------------------------------------
+
+   5. Mathematics 鈥?image variant (<img class="m">, .mblock)
+
+   The converter writes inline math as
+
+     <img class="m" src="../math/<key>.svg" style="width:..ex;height:..ex;
+
+          vertical-align:-..ex"/>
+
+   and display math as <div class="mblock"><img class="m" .../></div>.
+
+   -------------------------------------------------------------------------- */
+
+
+
+img.m {
+
+  display: inline-block;
+
+  max-width: 100%;
+
+  border: 0;
+
+  /* `vertical-align` is intentionally NOT set here: the converter already
+
+     encodes the formula depth in an inline style and an inline style wins. */
+
+}
+
+
+
+.mblock {
+
+  display: block;
+
+  text-align: center;
+
+  margin: 0.8em 0;
+
+  page-break-inside: avoid;
+
+  break-inside: avoid;
+
+}
+
+
+
+/* Width only. The converter's inline style carries `height:auto` on every
+
+   <img class="m">; declaring a height here would fight it, so this rule keeps
+
+   to the horizontal bound that makes an over-wide formula shrink. */
+
+.mblock img,
+
+.mblock img.m {
+
+  max-width: 100%;
+
+}
+
+
+
+/* Numbered display equations.  LaTeXML renders them either as a real
+
+   <table class="ltx_equation ltx_eqn_table"> or as a span-based
+
+   table (ltx_eqn_row / ltx_eqn_cell).  Both are handled. */
+
+.ltx_equation {
+
+  text-align: center;
+
+}
+
+
+
+.ltx_eqn_table {
+
+  display: table;
+
+  width: 100%;
+
+  max-width: 100%;
+
+  margin: 0.8em 0;
+
+  border-collapse: collapse;
+
+  page-break-inside: avoid;
+
+  break-inside: avoid;
+
+}
+
+
+
+.ltx_eqn_row {
+
+  display: table-row;
+
+}
+
+
+
+.ltx_eqn_cell {
+
+  display: table-cell;
+
+  vertical-align: baseline;
+
+  padding: 0.1em 0;
+
+}
+
+
+
+.ltx_eqn_cell.ltx_align_center {
+
+  text-align: center;
+
+}
+
+
+
+/* symmetric padding either side of a centred equation */
+
+.ltx_eqn_center_padleft,
+
+.ltx_eqn_center_padright {
+
+  width: 2.5em;
+
+}
+
+
+
+/* the equation number, right-aligned in its own column */
+
+.ltx_eqn_eqno,
+
+.ltx_eqn_cell.ltx_align_right,
+
+.ltx_eqn_eqno .ltx_tag,
+
+.ltx_tag_equation {
+
+  text-align: right;
+
+  white-space: nowrap;
+
+  font-weight: normal;
+
+}
+
+
+
+.ltx_eqn_eqno {
+
+  width: 4em;
+
+  padding-left: 0.5em;
+
+}
+
+
+
+/* Multi-line aligned systems: keep rows tight. */
+
+.ltx_equationgroup {
+
+  margin: 0.8em 0;
+
+  page-break-inside: avoid;
+
+  break-inside: avoid;
+
+}
+
+
+
+/* MathML variant (mathml build): the <math> element is inlined as-is. */
+
+math {
+
+  font-size: 1em;
+
+  max-width: 100%;
+
+  font-family: 'STIX Two Math', 'Latin Modern Math', 'Cambria Math',
+
+               'STIXGeneral', serif;
+
+}
+
+
+
+math[display="block"] {
+
+  display: block;
+
+  margin: 0.8em 0;
+
+  text-align: center;
+
+}
+
+
+
+/* Inline math should sit on the baseline and never force a line break. */
+
+.ltx_Math {
+
+  display: inline;
+
+  white-space: nowrap;
+
+}
+
+
+
+/* Keep unparsed/error math visible but unobtrusive. */
+
+.ltx_math_unparsed,
+
+.ltx_ERROR {
+
+  font-family: ui-monospace, 'DejaVu Sans Mono', Consolas, monospace;
+
+  font-size: 0.9em;
+
+}
+
+
+
+/* --------------------------------------------------------------------------
+
+   6. Code / algorithms / verbatim
+
+   -------------------------------------------------------------------------- */
+
+
+
+pre,
+
+code,
+
+kbd,
+
+samp,
+
+.ltx_verbatim,
+
+.ltx_listing,
+
+.ltx_listingline,
+
+.ltx_font_typewriter {
+
+  font-family: ui-monospace, 'DejaVu Sans Mono', Consolas, monospace;
+
+}
+
+
+
+code,
+
+kbd,
+
+samp,
+
+.ltx_font_typewriter {
+
+  font-size: 0.85em;
+
+  white-space: pre-wrap;
+
+  overflow-wrap: anywhere;
+
+}
+
+
+
+pre,
+
+.ltx_verbatim,
+
+.ltx_listing {
+
+  font-size: 0.78em;
+
+  line-height: 1.35;
+
+  white-space: pre-wrap;
+
+  word-wrap: break-word;
+
+  overflow-wrap: anywhere;
+
+  text-align: left;
+
+  hyphens: manual;
+
+  margin: 0.9em 0;
+
+  padding: 0.6em 0.7em;
+
+  background:none;
+
+  border-left:2px solid #000000;
+
+  /* long listings must be allowed to break across pages */
+
+  page-break-inside: auto;
+
+  break-inside: auto;
+
+}
+
+
+
+/* LaTeXML line-based listings: one block per line, indentation preserved.
+
+   `white-space` is deliberately NOT set here so the value is inherited:
+
+   `normal` (collapsing LaTeXML's source indentation) for the div-based
+
+   variant, `pre-wrap` when the converter wraps the listing in <pre>. */
+
+.ltx_listingline {
+
+  display: block;
+
+  margin: 0;
+
+  padding: 0;
+
+  min-height: 1.35em;
+
+  text-align: left;
+
+}
+
+
+
+/* line numbers / tags inside listings */
+
+.ltx_tag_listingline,
+
+.ltx_tag_float {
+
+  font-weight: normal;
+
+  opacity:1;
+
+  margin-right: 0.6em;
+
+}
+
+
+
+/* nested listings inside a block quote should not double-indent */
+
+pre pre,
+
+.ltx_listing .ltx_listing {
+
+  margin: 0;
+
+  padding: 0;
+
+  border: 0;
+
+  background: none;
+
+}
+
+
+
+/* --------------------------------------------------------------------------
+
+   7. Tables
+
+   -------------------------------------------------------------------------- */
+
+
+
+table {
+
+  border-collapse: collapse;
+
+  width: 100%;
+
+  margin: 0.9em 0;
+
+  font-size: 1em;
+
+  word-break: normal;
+
+  overflow-wrap: normal;
+
+  page-break-inside: avoid;
+
+  break-inside: avoid;
+
+}
+
+
+
+/* A real data table usually wants its own width, centred. */
+
+table.ltx_tabular {
+
+  width: auto;
+
+  max-width: 100%;
+
+  margin-left: auto;
+
+  margin-right: auto;
+
+}
+
+
+
+th,
+
+td {
+
+  padding: 0.28em 0.5em;
+
+  vertical-align: top;
+
+  text-align: left;
+
+  word-break: normal;
+
+  overflow-wrap: normal;
+
+  hyphens: manual;
+
+}
+
+
+
+th,
+
+.ltx_th {
+
+  font-weight: bold;
+
+}
+
+
+
+caption {
+
+  caption-side: top;
+
+  font-size: 0.9em;
+
+  text-align: left;
+
+  margin-bottom: 0.4em;
+
+}
+
+
+
+/* Wide numeric tables: shrink a little rather than overflow. */
+
+.ltx_tabular th,
+
+.ltx_tabular td {
+
+  font-size: 0.85em;
+
+}
+
+
+
+/* Cell alignment classes emitted by LaTeXML. */
+
+.ltx_align_left   { text-align: left; }
+
+.ltx_align_center { text-align: center; }
+
+.ltx_align_right  { text-align: right; }
+
+.ltx_align_middle { vertical-align: middle; }
+
+.ltx_align_top    { vertical-align: top; }
+
+.ltx_align_bottom { vertical-align: bottom; }
+
+.ltx_align_baseline { vertical-align: baseline; }
+
+
+
+.ltx_centering {
+
+  margin-left: auto;
+
+  margin-right: auto;
+
+  text-align: center;
+
+}
+
+
+
+/* LaTeXML draws booktabs rules with border classes on th/td:
+
+   ltx_border_tt = top rule of the table, ltx_border_t = rule above a row,
+
+   ltx_border_b = rule below a row, ltx_border_bb = bottom rule.
+
+   A rule under the header is the minimum a reader needs. */
+
+.ltx_border_tt,
+
+.ltx_border_t {
+
+  border-top: 1px solid currentColor;
+
+}
+
+
+
+.ltx_border_b,
+
+.ltx_border_bb {
+
+  border-bottom: 1px solid currentColor;
+
+}
+
+
+
+.ltx_border_l { border-left: 1px solid currentColor; }
+
+.ltx_border_r { border-right: 1px solid currentColor; }
+
+
+
+/* Rules are decorative; don't let them look heavy. */
+
+.ltx_border_tt,
+
+.ltx_border_t,
+
+.ltx_border_b,
+
+.ltx_border_bb,
+
+.ltx_border_l,
+
+.ltx_border_r {
+
+  border-color:#000;
+
+}
+
+
+
+/* The thead keeps its rule when the table breaks across pages. */
+
+thead {
+
+  display: table-header-group;
+
+}
+
+
+
+/* Multi-panel figures/tables use a flex layout in LaTeXML HTML. */
+
+.ltx_flex_figure,
+
+.ltx_flex_table {
+
+  display: block;
+
+  width: 100%;
+
+  margin: 0.8em 0;
+
+}
+
+
+
+.ltx_flex_cell {
+
+  display: inline-block;
+
+  vertical-align: middle;
+
+  max-width: 100%;
+
+  margin: 0.2em 0;
+
+}
+
+
+
+.ltx_flex_size_1 { width: 100%; }
+
+.ltx_flex_size_2 { width: 49%; }
+
+.ltx_flex_size_3 { width: 32%; }
+
+.ltx_flex_size_4 { width: 24%; }
+
+
+
+.ltx_minipage {
+
+  display: inline-block;
+
+  vertical-align: middle;
+
+  max-width: 100%;
+
+}
+
+
+
+/* --------------------------------------------------------------------------
+
+   8. Figures & captions
+
+   -------------------------------------------------------------------------- */
+
+
+
+figure,
+
+.ltx_figure,
+
+.ltx_float {
+
+  display: block;
+
+  margin: 1.1em 0;
+
+  text-align: center;
+
+  page-break-inside: avoid;
+
+  break-inside: avoid;
+
+}
+
+
+
+figure img,
+
+figure svg,
+
+.ltx_graphics,
+
+.ltx_figure img {
+
+  max-width: 100%;
+
+  height: auto;
+
+  border: 0;
+
+}
+
+
+
+/* LaTeXML wraps downloaded figures in <object type="image/svg+xml">.
+
+   If the converter keeps <object>, keep it centred and bounded. */
+
+.ltx_graphics {
+
+  display: inline-block;
+
+}
+
+
+
+figcaption,
+
+.ltx_caption {
+
+  font-size: 0.9em;
+
+  line-height: 1.4;
+
+  text-align: left;
+
+  margin: 0.5em 0 0 0;
+
+  font-style: italic;
+
+  hyphens: manual;
+
+}
+
+
+
+figcaption .ltx_tag,
+
+.ltx_caption .ltx_tag {
+
+  font-style: normal;
+
+  font-weight: bold;
+
+}
+
+
+
+/* Percentage font-sizes inside captions come from LaTeXML inline styles;
+
+   leave them alone (they are already relative). */
+
+
+
+/* --------------------------------------------------------------------------
+
+   9. Theorem-like environments
+
+   The book's LaTeX styles already italicise statement bodies (LaTeXML emits
+
+   <span class="ltx_font_italic"> for them), so the block styling below is
+
+   what makes a theorem read as a theorem: a rule, a tint, an indent and a
+
+   bold run-in label.  Proofs, definitions, examples and remarks are upright
+
+   by LaTeX convention and are explicitly kept upright.
+
+   -------------------------------------------------------------------------- */
+
+
+
+.ltx_theorem {
+
+  display: block;
+
+  margin: 1em 0;
+
+  padding: 0.15em 0 0.15em 0.9em;
+
+  border-left:2px solid #000000;
+
+  font-size: 1em;
+
+  page-break-inside: avoid;
+
+  break-inside: avoid;
+
+}
+
+
+
+/* The framed span LaTeXML puts around a theorem body: it carries the border,
+
+   so make it a block and drop the decoration we already put on the parent. */
+
+.ltx_theorem .ltx_inline-logical-block,
+
+.ltx_theorem .ltx_framed_rectangle {
+
+  display: block;
+
+  border: 0;
+
+  padding: 0;
+
+  margin: 0;
+
+}
+
+
+
+.ltx_theorem > .ltx_para,
+
+.ltx_theorem > div {
+
+  margin: 0;
+
+}
+
+
+
+/* Run-in "Theorem 1.2.3." label */
+
+.ltx_theorem .ltx_title_theorem,
+
+.ltx_theorem .ltx_runin {
+
+  display: inline;
+
+  font-weight: bold;
+
+  font-style: normal;
+
+  margin: 0;
+
+}
+
+
+
+.ltx_theorem .ltx_tag_theorem {
+
+  font-weight: bold;
+
+  font-style: normal;
+
+}
+
+
+
+/* Statement-style environments read as italic. */
+
+.ltx_theorem_theorem,
+
+.ltx_theorem_proposition,
+
+.ltx_theorem_lemma,
+
+.ltx_theorem_corollary,
+
+.ltx_theorem_claim,
+
+.ltx_theorem_conjecture {
+
+  font-style: italic;
+
+}
+
+
+
+/* Definition/example/remark/proof bodies are upright in this book. */
+
+.ltx_theorem_definition,
+
+.ltx_theorem_example,
+
+.ltx_theorem_remark,
+
+.ltx_theorem_proof,
+
+.ltx_theorem_note {
+
+  font-style: normal;
+
+}
+
+
+
+/* Keep labels upright inside any italic theorem body. */
+
+.ltx_theorem .ltx_tag,
+
+.ltx_theorem .ltx_title {
+
+  font-style: normal;
+
+}
+
+
+
+/* Proofs get a lighter rule and a slightly smaller body. */
+
+.ltx_theorem_proof {
+
+  border-left:1px solid #000000;
+
+  font-size: 0.98em;
+
+}
+
+
+
+/* Definitions get a gentle tint so they are findable by flipping pages. */
+
+.ltx_theorem_definition {
+
+  background:none;
+
+  padding: 0.5em 0.6em 0.5em 0.9em;
+
+}
+
+
+
+/* Framed/decorated boxes emitted by LaTeXML (\framebox, tcolorbox). */
+
+.ltx_framed {
+
+  display: block;
+
+}
+
+
+
+.ltx_framed_rectangle {
+
+  display: block;
+
+  border: 1px solid rgba(0, 0, 0, 0.3);
+
+  padding: 0.55em 0.7em;
+
+  margin: 0.9em 0;
+
+}
+
+
+
+.ltx_framed_topbottom {
+
+  display: block;
+
+  border-top:1px solid #000;
+
+  border-bottom:1px solid #000;
+
+  padding: 0.45em 0;
+
+  margin: 0.9em 0;
+
+}
+
+
+
+/* --------------------------------------------------------------------------
+
+   10. Lists
+
+   -------------------------------------------------------------------------- */
+
+
+
+ul, ol {
+
+  margin: 0.55em 0 0.7em 0;
+
+  padding-left: 1.4em;
+
+}
+
+
+
+li {
+
+  margin: 0.18em 0;
+
+  text-align: left;
+
+}
+
+
+
+/* Nested lists are tighter and less indented. */
+
+li > ul,
+
+li > ol {
+
+  margin: 0.15em 0 0.2em 0;
+
+  padding-left: 1.15em;
+
+}
+
+
+
+li > p {
+
+  margin: 0.15em 0;
+
+}
+
+
+
+/* LaTeXML itemize/enumerate */
+
+.ltx_itemize,
+
+.ltx_enumerate {
+
+  margin: 0.55em 0 0.7em 0;
+
+  padding-left: 1.4em;
+
+}
+
+
+
+.ltx_item {
+
+  display: list-item;
+
+  margin: 0.18em 0;
+
+}
+
+
+
+.ltx_tag_item {
+
+  font-weight: bold;
+
+  font-style: normal;
+
+}
+
+
+
+dl {
+
+  margin: 0.7em 0;
+
+}
+
+
+
+dt {
+
+  font-weight: bold;
+
+}
+
+
+
+dd {
+
+  margin: 0 0 0.4em 1.4em;
+
+}
+
+
+
+/* --------------------------------------------------------------------------
+
+   11. Links, citations, references
+
+   Readers draw their own link affordances; inheriting the text colour keeps
+
+   night mode and sepia themes readable.
+
+   -------------------------------------------------------------------------- */
+
+
+
+a,
+
+a[href] {
+
+  color: inherit;
+
+  text-decoration: none;
+
+}
+
+
+
+.ltx_ref,
+
+.ltx_cite,
+
+.ltx_href,
+
+.ltx_url {
+
+  color: inherit;
+
+  text-decoration: none;
+
+}
+
+
+
+/* Reference numbers and citation tags stay compact. */
+
+.ltx_ref_tag,
+
+.ltx_tag_ref {
+
+  font-weight: normal;
+
+}
+
+
+
+/* --------------------------------------------------------------------------
+
+   12. Bibliography
+
+   -------------------------------------------------------------------------- */
+
+
+
+.ltx_bibliography {
+
+  margin-top: 1.5em;
+
+}
+
+
+
+.ltx_bibliography .ltx_title_bibliography,
+
+.ltx_title_bibliography {
+
+  text-align: center;
+
+  margin: 1.6em 0 1em 0;
+
+}
+
+
+
+.ltx_biblist {
+
+  list-style: none;
+
+  margin: 0;
+
+  padding: 0;
+
+}
+
+
+
+.ltx_bibitem,
+
+.ltx_bibblock {
+
+  display: block;
+
+  margin: 0 0 0.55em 0;
+
+  padding-left: 2.2em;
+
+  text-indent: -2.2em;      /* hanging indent */
+
+  font-size: 0.94em;
+
+  text-align: left;
+
+  hyphens: manual;
+
+}
+
+
+
+.ltx_tag_bibitem {
+
+  font-weight: normal;
+
+}
+
+
+
+/* --------------------------------------------------------------------------
+
+   13. Abstract / miscellaneous front matter
+
+   -------------------------------------------------------------------------- */
+
+
+
+.ltx_abstract {
+
+  margin: 1.4em 0;
+
+  padding: 0.7em 0.9em;
+
+  background:none;
+
+  font-size: 0.97em;
+
+}
+
+
+
+.ltx_title_abstract {
+
+  font-size: 1em;
+
+  text-align: center;
+
+  margin: 0 0 0.6em 0;
+
+  letter-spacing: 0.04em;
+
+  text-transform: uppercase;
+
+}
+
+
+
+.ltx_authors,
+
+.ltx_creator {
+
+  text-align: center;
+
+  font-size: 1.05em;
+
+}
+
+
+
+.ltx_role_author .ltx_personname {
+
+  font-style: normal;
+
+}
+
+
+
+/* Anything the converter needs to keep off the page. */
+
+.hidden,
+
+.is-hidden {
+
+  display: none;
+
+}
+
+
+
+/* --------------------------------------------------------------------------
+
+   14. Converter-emitted layout
+
+   Classes produced by the build converter (not by LaTeXML): equation rows
+
+   built from spans, align* groups kept as real tables, figure images, the
+
+   title page, the contents list and the colophon. This section comes last so
+
+   that it wins over the generic LaTeXML vocabulary above where both apply.
+
+   -------------------------------------------------------------------------- */
+
+
+
+/* equation layout */
+
+.eqblock, .eqgroup { display:block; margin:0.85em 0; }
+
+.eqrow { display:flex; align-items:baseline; justify-content:center; }
+
+.eqrow .eqcell { flex:0 1 auto; text-align:center; padding:0 0.15em; }
+
+.eqcell.ltx_align_right { text-align:right; }
+
+.eqcell.ltx_align_left  { text-align:left;  }
+
+.eqno { flex:0 0 auto; margin-left:auto; padding-left:1em; text-align:right;
+
+        white-space:nowrap; font-size:0.92em; }
+
+
+
+/* align* groups keep real table markup */
+
+table.eqtable { border-collapse:collapse; width:auto; max-width:100%; margin:0.85em auto; }
+
+table.eqtable td { padding:0.1em 0.35em; vertical-align:baseline; border:0; }
+
+table.eqtable td.eqcell { text-align:center; }
+
+table.eqtable td.eqcell.ltx_align_right { text-align:right; }
+
+table.eqtable td.eqcell.ltx_align_left  { text-align:left;  }
+
+table.eqtable td.eqno { text-align:right; white-space:nowrap; font-size:0.92em; }
+
+
+
+/* figures + front/back matter */
+
+img.figimg { display:block; margin:0.6em auto; max-width:100%; height:auto; }
+
+.titlepage { text-align:center; margin-top:16%; }
+
+h1.booktitle { font-size:1.9em; line-height:1.25; margin:0 0 0.9em 0; }
+
+.bookauthors { font-size:1.15em; margin:0.2em 0; }
+
+.bookaffil, .bookversion, .bookarxiv { font-size:0.88em; color:#000; margin:0.15em 0; }
+
+.bookabstract { text-align:left; margin-top:2.2em; font-size:0.92em; }
+
+.bookabstract h2 { font-size:1.05em; text-align:center; }
+
+ul.toc { list-style:none; padding-left:0; }
+
+ul.toc li { margin:0.18em 0; }
+
+ul.toc .toc-l1 { font-weight:bold; margin-top:0.7em; }
+
+ul.toc .toc-l2 { padding-left:1.2em; }
+
+ul.toc .toc-l3 { padding-left:2.4em; font-size:0.94em; }
+
+.colophon { font-size:0.92em; }
+
+
+
+/* Nothing may exceed the reading column.
+
+   A display equation is an <img> with a fixed width in `ex`; when the column is narrower
+
+   than the equation the picture has to shrink, and for that every ancestor that would
+
+   otherwise report a min-content width has to become a definite-width box:
+
+     - framed theorem boxes are display:block, so max-width:100% gives them the column width;
+
+     - align* tables get <colgroup> widths in ex from the converter + table-layout:fixed,
+
+       so the columns shrink proportionally and the "=" signs stay in one column.
+
+   `min-width:0` on flex cells is what stops a single wide formula from forcing the row
+
+   wider than the column. Images keep `height:auto`, so shrinking never distorts them. */
+
+.ltx_inline-logical-block,
+
+.ltx_framed,
+
+.ltx_framed_rectangle { max-width:100%; box-sizing:border-box; }
+
+
+
+table.eqtable { table-layout:fixed; }
+
+table.eqtable td { box-sizing:border-box; padding:0.1em 0.2em; }
+
+table.eqtable td.eqcell img.m { max-width:100%; }
+
+
+
+.eqrow .eqcell { min-width:0; }
+
+.eqrow img.m { max-width:100%; }
+
+
+
+/* Very narrow reading columns (phones). A real <table> cannot be scaled below the width of its
+
+   contents: `max-width` is not honoured for `table-layout:fixed` tables with a specified
+
+   width (verified in Chromium: computed max-width:100% but used width 622px in a 317px column).
+
+   So below 640px the align* group is re-flowed as flex rows, which do shrink (`min-width:0`
+
+   + `max-width:100%` on the images). Above 640px the genuine table layout is kept, so the
+
+   "=" signs stay in one column across rows 鈥?that alignment is the whole point of align*.
+
+   `!important` here only overrides the per-table `width:Nex` the converter writes inline. */
+
+@media (max-width: 640px) {
+
+  table.eqtable { display:block; width:auto !important; max-width:100%; table-layout:auto; }
+
+  table.eqtable colgroup { display:none; }
+
+  table.eqtable tbody { display:block; }
+
+  table.eqtable tr { display:flex; align-items:baseline; justify-content:center; }
+
+  table.eqtable td { display:block; flex:0 1 auto; min-width:0; }
+
+  table.eqtable td.eqno { flex:0 0 auto; margin-left:auto; padding-left:0.7em; }
+
+}
+
+
+
+/* ==========================================================================
+
+   E-INK BILINGUAL  (appended by tools/convert/apply_eink_css.py)
+
+   Pure black ink on white paper: no grey text, no tinted panels. The Chinese
+
+   line is the primary text; the English original sits under it, smaller, in the
+
+   same black ink. Nothing is distinguished by colour.
+
+   ========================================================================== */
+
+
+
+html, body { background: #ffffff; color: #000000; }
+
+a, a:visited, a:link { color: #000000; text-decoration: underline; }
+
+.bookaffil, .bookversion, .bookarxiv, .booksubtitle { color: #000000; }
+
+
+
+hr, .ltx_rule { opacity: 1; border-color: #000000; background-color: #000000; }
+
+.ltx_framed_rectangle, .ltx_framed_topbottom, .ltx_framed_bottomtop {
+
+  border-color: #000000; background: none;
+
+}
+
+.ltx_border_tt, .ltx_border_t, .ltx_border_b, .ltx_border_bb,
+
+.ltx_border_l, .ltx_border_r { border-color: #000000; }
+
+.ltx_theorem, .ltx_proof, .ltx_listing, pre, code,
+
+table, tr, td, th, figure, blockquote { background: none; }
+
+pre, code { border-color: #000000; }
+
+
+
+/* --------------------------------------------------------------------------
+
+   One translated block = Chinese line, then the English original.
+
+
+
+   Pair cohesion is the point of a facing-text edition: a reader must never turn
+
+   a page between a Chinese sentence and the English it translates. The two
+
+   break hints keep the pair on one page in engines that honour either the
+
+   modern `break-*` or the legacy `page-break-*` property, and orphans/widows
+
+   stop a three-line block from being split 1+2.
+
+   -------------------------------------------------------------------------- */
+
+.tn-zh {
+
+  display: block;
+
+  color: #000000;
+
+  /* CJK needs more leading than Latin at the same size; 1.55 is already the
+
+     body default and too tight for a serif CJK face on e-ink */
+
+  line-height: 1.70;
+
+  orphans: 2; widows: 2;
+
+  break-after: avoid; page-break-after: avoid;
+
+}
+
+.tn-en {
+
+  display: block;
+
+  color: #000000;
+
+  font-size: 0.84em;
+
+  line-height: 1.40;
+
+  margin-top: 0.10em;
+
+  orphans: 2; widows: 2;
+
+  break-before: avoid; page-break-before: avoid;
+
+}
+
+
+
+/* --------------------------------------------------------------------------
+
+   Headings: the Chinese title is the real title and keeps the full heading
+
+   size; the English title is a secondary label. The treatment follows the role
+
+   of the heading, not just its level:
+
+
+
+   * h1-h4 are display titles (part/chapter/section/subsection). The English
+
+     goes on its own line underneath in lighter type, which is consistent, never
+
+     leaves a ragged English fragment, and lets the Chinese title stay the
+
+     dominant mark.
+
+   * h5/h6 are run-in labels (paragraph titles, and LaTeXML's
+
+     ltx_title_theorem, i.e. every "Definition 2.1.1 (…)" box header). Stacking
+
+     those would double the height of ~700 inline labels, so the English trails
+
+     the Chinese label inline and wraps naturally when the line is full.
+
+   -------------------------------------------------------------------------- */
+
+.tn-zh-inline { display: inline; }   /* heading default; h1-h4 override to block */
+
+h1 .tn-zh-inline, h2 .tn-zh-inline, h3 .tn-zh-inline, h4 .tn-zh-inline {
+
+  display: block; font-size: 1em; line-height: 1.28;
+
+}
+
+h1 .tn-en, h2 .tn-en {
+
+  display: block; font-size: 0.56em; font-weight: normal; line-height: 1.32;
+
+  margin: 0.16em 0 0 0;
+
+}
+
+h3 .tn-en, h4 .tn-en {
+
+  display: block; font-size: 0.66em; font-weight: normal; line-height: 1.30;
+
+  margin: 0.12em 0 0 0;
+
+}
+
+h5 .tn-zh, h6 .tn-zh, h5 .tn-zh-inline, h6 .tn-zh-inline {
+
+  display: inline; font-size: 1em; line-height: 1.45;
+
+}
+
+h5 .tn-en, h6 .tn-en {
+
+  display: inline; font-size: 0.66em; font-weight: normal; line-height: 1.45;
+
+  margin-left: 0.45em;
+
+}
+
+/* a section opening with a bilingual heading should not push the first
+
+   paragraph onto the next page on its own */
+
+h1 + .ltx_para, h2 + .ltx_para, h3 + .ltx_para { break-before: avoid; }
+
+
+
+/* inside a table cell the pair must not add outer spacing or big leading */
+
+td .tn-zh, th .tn-zh { line-height: 1.35; }
+
+td .tn-en, th .tn-en { margin-top: 0.05em; font-size: 0.82em; line-height: 1.30; }
+
+
+
+/* the table of contents repeats both titles: `Chinese · English` with the
+
+   separator doing the work that a second line would do */
+
+.toc a, .toc-page a { color: #000000; text-decoration: none; line-height: 1.45; }
+
+
+
+/* title page: the edition label above, the Chinese title under the English one */
+
+.bookedition {
+
+  color: #000000; font-size: 0.82em; letter-spacing: 0.02em;
+
+  margin: 0 0 1.4em 0; text-align: center;
+
+}
+
+.booktitle-zh {
+
+  color: #000000; font-size: 1.42em; font-weight: bold;
+
+  margin: 0.55em 0 0.2em 0; text-align: center; letter-spacing: 0.06em;
+
+}
+
 
 
 /* ==========================================================================
@@ -1155,15 +2290,23 @@ html {
   color-scheme: light;
 }
 
+/* ---- 正文字体 ----------------------------------------------------------
+   目标形态：思源宋 Medium（比 Regular 略粗）。字体本身装在系统里
+   （Magisk 模块，family 名 "Zipshelf Serif"，字重 400/500/600/700），
+   所以这里只写族名，不用 @font-face，也不依赖任何 App 注入。
+
+   没装字体模块时会依次回退：系统 Noto Serif CJK（本机就是思源宋 Regular）
+   → 思源宋 → 宋体 → 通用 serif。 */
 body {
   margin: 0;
   padding: 0;
   background: var(--paper);
   color: var(--ink);
-  font-family: "Noto Serif CJK SC", "Source Han Serif SC", "Songti SC", "SimSun",
-               "Noto Serif", Georgia, serif;
-  font-size: 1.0625rem;
-  line-height: 1.62;
+  font-family: "Zipshelf Serif", "Noto Serif CJK SC", "Source Han Serif SC", "Songti SC",
+               "SimSun", "Noto Serif", Georgia, serif;
+  font-size: 1.15rem;
+  line-height: 1.6;
+  font-weight: 500;
   text-align: justify;
   hyphens: auto;
 }

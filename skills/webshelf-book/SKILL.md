@@ -79,6 +79,10 @@ python scripts/new_book.py mybook --title "我的书" --subtitle "副标题" --c
 ## 排版
 
 直接用 `templates/assets/style.css`——就是这两本书在用的 web layer，别自己另写一套。
+
+正文字体写的是 `"Zipshelf Serif"` + `font-weight: 500`：这是**系统级**字体（思源宋 Medium，
+由 Magisk 模块装进系统），书里不放字体文件、不用 `@font-face`。没装模块时按字体栈回退到
+系统自带的思源宋/宋体，`font-weight: 500` 不生效但排版不会坏。
 关键数值：
 
 | 变量 / 规则 | 值 | 说明 |

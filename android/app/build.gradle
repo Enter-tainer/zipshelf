@@ -49,6 +49,12 @@ android {
     testOptions {
         unitTests.returnDefaultValues = true
     }
+
+    // 字体 24 MB 不压缩：这样 AssetManager.openFd 能直接给出长度与文件描述符，
+    // 服务端才能回准确的 Content-Length。（APK 会大些，但读字体更快。）
+    androidResources {
+        noCompress += ['ttf']
+    }
 }
 
 dependencies {

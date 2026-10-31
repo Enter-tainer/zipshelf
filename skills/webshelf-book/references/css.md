@@ -24,6 +24,22 @@
   - 圆角的抗锯齿边缘也是一圈灰
 - 链接用「黑色下划线 + hover 反相」来区分，不靠颜色
 
+## 字体
+
+```css
+body {
+  font-family: "Zipshelf Serif", "Noto Serif CJK SC", "Source Han Serif SC",
+               "Songti SC", "SimSun", "Noto Serif", Georgia, serif;
+  font-weight: 500;      /* Medium：比 Regular 略粗，墨水屏上更扎实 */
+}
+```
+
+- 首选族名来自**系统字体模块**（见仓库 `docs/font.md`）：完整思源宋可变字体，
+  字重 400/500/600/700 都是真字重，不是合成加粗
+- 书里**不放字体文件**：不用 `@font-face`、没有 `fonts/*.woff2`、不依赖 App 注入
+- 没装模块时整条栈依次回退，最差落到通用 `serif`，排版不变、只是字重回到 Regular
+- 为什么不在书里带字体：每本书都要背一份（10–24 MB），换书就得重做，且做不到「全局一致」
+
 ## 字号与栏宽
 
 ```css

@@ -18,15 +18,21 @@ public final class ServerCore {
     private static HttpServer server;
     private static int port = -1;
     private static volatile Map<String, LibraryHandler.Book> books = Collections.emptyMap();
+    private static volatile moe.mgt.zipshelf.http.AssetSource assets;
 
     private ServerCore() {
+    }
+
+    /** App 自带资源（正文衬线字体）。服务启动前注入；为空时 /@/ 返回 404。 */
+    public static void setAssets(moe.mgt.zipshelf.http.AssetSource source) {
+        assets = source;
     }
 
     public static synchronized int ensureStarted() throws IOException {
         if (server != null && server.isRunning()) {
             return port;
         }
-        HttpServer s = new HttpServer(new LibraryHandler(() -> books, true), BASE_PORT);
+        HttpServer s = new HttpServer(new LibraryHandler(() -> books, true, assets), BASE_PORT);
         port = s.start();
         server = s;
         return port;
