@@ -56,8 +56,6 @@ public final class ServerService extends Service {
                 moe.mgt.zipshelf.data.BookStore store = new moe.mgt.zipshelf.data.BookStore(getFilesDir());
                 ServerCore.setBooks(store.list());
             }
-            // 全局字体等 App 资源：由 APK assets 提供，所有书共用同一份
-            ServerCore.setAssets(ApkAssets.create(this));
             int port = ServerCore.ensureStarted();
             int count = ServerCore.books().size();
             updateNotification("正在提供 " + count + " 本书 · 端口 " + port);
