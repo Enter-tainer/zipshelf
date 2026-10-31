@@ -17,6 +17,13 @@ site/
 ## 最小上手
 
 ```bash
+# 一条命令生成骨架：目录页 + N 个章节页（上下页已接好）+ 样式 + KaTeX + 封面
+python scripts/new_book.py mybook --title "我的书" --subtitle "副标题" --chapters 3
+```
+
+或者手工组装：
+
+```bash
 cp -r templates/assets site/
 cp templates/index.html site/index.html
 cp templates/page.html site/ch0001.html

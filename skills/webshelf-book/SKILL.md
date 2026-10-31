@@ -60,7 +60,13 @@ node scripts/render_math.mjs --display '\int_0^1 f(x)\,dx'   # 行间
 
 ## 页面骨架
 
-照抄 `templates/page.html`（章节页）和 `templates/index.html`（目录页）。要点：
+最快的方式是用脚手架生成一本空书（目录、上下页链接、样式、KaTeX、封面都接好）：
+
+```bash
+python scripts/new_book.py mybook --title "我的书" --subtitle "副标题" --chapters 3
+```
+
+然后只改正文。手写也行，照抄 `templates/page.html`（章节页）和 `templates/index.html`（目录页）。要点：
 
 - `head` 里必须有 `charset`、`<title>`（App 用它做书架标题）、`assets/style.css`、
   `viewport`、`color-scheme: light`、`assets/katex/katex.min.css`

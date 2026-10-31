@@ -61,6 +61,13 @@ jobs:
       - name: Pack it
         run: python skills/webshelf-book/scripts/pack_book.py /tmp/demo -o /tmp/demo-book.zip
 
+      - name: Scaffold a 3-chapter book with new_book.py, then validate it
+        run: |
+          python skills/webshelf-book/scripts/new_book.py /tmp/scaffold \
+            --title "CI 示范书" --subtitle scaffold --chapters 3
+          python skills/webshelf-book/scripts/check_book.py /tmp/scaffold
+          python skills/webshelf-book/scripts/pack_book.py /tmp/scaffold -o /tmp/scaffold.zip
+
       - uses: actions/upload-artifact@v7
         with:
           name: demo-book
