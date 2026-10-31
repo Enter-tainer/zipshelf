@@ -92,7 +92,7 @@ python tools/make_font_module.py \
 body {
   font-family: "Zipshelf Serif", "Noto Serif CJK SC", "Source Han Serif SC",
                "Songti SC", "SimSun", "Noto Serif", Georgia, serif;
-  font-size: 1.15rem;
+  font-size: 1.2rem;
   line-height: 1.6;
   font-weight: 500;      /* 有模块 → 真 Medium；没模块 → 回退 Regular */
 }

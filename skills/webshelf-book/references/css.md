@@ -43,7 +43,7 @@ body {
 ## 字号与栏宽
 
 ```css
-body   { font-size: 1.0625rem; line-height: 1.62; }
+body   { font-size: 1.2rem; line-height: 1.6; font-weight: 500; }
 .wrap  { max-width: var(--measure); margin: 0 auto; padding: 0 var(--gutter) 5rem; }
 @media (max-width: 34rem) { :root { --gutter: 0.85rem; } body { font-size: 1.02rem; } }
 ```

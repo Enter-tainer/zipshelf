@@ -89,8 +89,9 @@ python scripts/new_book.py mybook --title "我的书" --subtitle "副标题" --c
 |---|---|---|
 | `--measure` | `43rem` | 阅读栏宽，约 70 个汉字 |
 | `--gutter` | `1.15rem` | 左右留白（`34rem` 以下变 `0.85rem`） |
-| body `font-size` | `1.0625rem` | 相对单位，让浏览器缩放仍然有效 |
-| body `line-height` | `1.62` | |
+| body `font-size` | `1.2rem` | 相对单位，让浏览器缩放仍然有效（约 19 px） |
+| body `line-height` | `1.6` | |
+| body `font-weight` | `500` | 思源宋 Medium（系统字体模块提供） |
 | 链接 | 黑字 + 1px 黑色下划线；hover 反相（黑底白字） | |
 | 插图 | `max-width:100%; height:auto` | 不放大、不裁切 |
 | 宽公式 | 该行 `overflow-x:auto` 横向滚动，**不缩小** | 缩到 60% 就看不清了 |
