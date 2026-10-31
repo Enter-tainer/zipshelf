@@ -2454,6 +2454,6 @@ table { border-collapse: collapse; }
 
 @media (max-width: 34rem) {
   :root { --gutter: 0.85rem; }
-  body { font-size: 1.02rem; }
+  body { font-size: 1.1rem; }
   .site-head .crumb { display: none; }
 }
